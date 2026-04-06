@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kodez CheckMate</title>
+  <link rel="icon" type="image/svg+xml" href="/branding/kodez_logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --sidebar-bg: #0f172a;
+      --card-bg: #ffffff;
+      --accent: #ff7f56;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --high: #ef4444;
+      --moderate: #f59e0b;
+      --low: #10b981;
+      --info: #3b82f6;
+      --genai: #8b5cf6;
+      --header-h: 78px;
+      --sidebar-w: 280px;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --ui: 'Public Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--ui);
+      background: linear-gradient(180deg, #f8fafc 0%, var(--bg) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-h);
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      z-index: 200;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-mark {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+    .logo-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(58,140,235,.12);
+      border: 1px solid rgba(58,140,235,.3);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #3b82f6;
+    }
+    .hackathon-label {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(148,163,184,.38);
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: #cbd5e1;
+      background: rgba(15,23,42,.24);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .head-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .top-blog-link {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(148,163,184,.38);
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: #cbd5e1;
+      background: rgba(15,23,42,.24);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .top-blog-link:hover {
+      color: #ffffff;
+      border-color: rgba(255,127,86,.55);
+      background: rgba(255,127,86,.12);
+      box-shadow: 0 0 14px rgba(255,127,86,.2);
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      padding: 6px 14px 6px 6px;
+      font-size: 13px;
+    }
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .user-name {
+      font-weight: 600;
+      color: #fff;
+    }
+    .btn-text {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      transition: color .2s;
+      margin-left: 8px;
+      text-decoration: none;
+      font-family: var(--mono);
+    }
+    .btn-text:hover { color: #fff; }
+
+    .layout {
+      display: flex;
+      margin-top: var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+    }
+    aside {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: #0f172a;
+      color: #cbd5e1;
+      border: 1px solid rgba(148,163,184,.28);
+      border-radius: 14px;
+      padding: 16px;
+      position: fixed;
+      top: calc(var(--header-h) + 14px);
+      left: 14px;
+      bottom: 14px;
+      overflow-y: auto;
+    }
+    .nav-item {
+      display: block;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-family: var(--ui);
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+      background: transparent;
+      color: #cbd5e1;
+      text-decoration: none;
+    }
+    .nav-item.home-link {
+      border-color: rgba(148,163,184,.42);
+      background: rgba(148,163,184,.1);
+    }
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(148,163,184,.14);
+      border-color: rgba(148,163,184,.34);
+    }
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--accent), #ff7f56);
+      border-color: rgba(255, 127, 86, .45);
+      box-shadow: 0 8px 24px rgba(255, 127, 86, .22);
+      color: #fff;
+    }
+    .scan-item {
+      border: 1px solid rgba(148,163,184,.12);
+      border-radius: 10px;
+      padding: 10px 11px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background: rgba(148,163,184,.06);
+    }
+    .scan-item:hover { background: rgba(148,163,184,.16); border-color: rgba(148,163,184,.28); }
+    .scan-item.active {
+      background: rgba(255, 127, 86, .16);
+      border-color: rgba(255, 127, 86, .3);
+    }
+    .scan-date { font-size: 12px; font-weight: 600; color: #e2e8f0; }
+    .scan-file { font-size: 11px; color: #94a3b8; margin-top: 4px; word-break: break-all; font-family: var(--mono); }
+    .scan-counts { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+    .b { font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 7px; }
+    .b-H { background: rgba(239,68,68,.22); color: #fca5a5; }
+    .b-M { background: rgba(245,158,11,.22); color: #fcd34d; }
+    .b-L { background: rgba(16,185,129,.22); color: #6ee7b7; }
+    .b-I { background: rgba(59,130,246,.22); color: #93c5fd; }
+    .b-G { background: rgba(139,92,246,.22); color: #c4b5fd; }
+
+    main {
+      margin-left: calc(var(--sidebar-w) + 28px);
+      flex: 1;
+      padding: 22px;
+      min-width: 0;
+      width: calc(100vw - (var(--sidebar-w) + 42px));
+      max-width: none;
+    }
+    .view { display: none; }
+    .view.active { display: block; }
+    .page-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+    .page-title { font-size: 26px; font-weight: 700; letter-spacing: -.015em; font-family: var(--ui); }
+    .page-sub { color: var(--text-secondary); font-size: 13px; margin-top: 4px; font-weight: 500; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+    .stat-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .stat-refresh {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text-secondary);
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .stat-refresh:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(255, 127, 86, .08);
+    }
+    .stat-refresh:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+    .stat-value { font-size: 30px; font-weight: 700; margin-top: 6px; letter-spacing: -.02em; }
+
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 1px 3px rgba(15,23,42,.06);
+    }
+    .card h3 { font-size: 13px; margin-bottom: 10px; font-weight: 700; letter-spacing: .01em; }
+    .chart-box { height: clamp(280px, 34vh, 380px); }
+
+    .table-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .table-title { padding: 12px 14px; font-size: 13px; font-weight: 700; border-bottom: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 12px; text-align: left; }
+    td { font-weight: 500; }
+    th { background: #f8fafc; color: #64748b; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; font-family: var(--mono); }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: #f8fafc; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .finding-list { margin-top: 10px; }
+    .finding {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .finding-title { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+    .finding-sub { margin-top: 3px; font-size: 11px; color: var(--text-secondary); }
+    .finding-msg { margin-top: 6px; font-size: 12px; color: #334155; }
+    .empty { color: var(--text-secondary); font-size: 13px; padding: 10px 2px; }
+
+    .findings-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .findings-count { font-size: 15px; font-weight: 700; color: var(--text-primary); letter-spacing: -.01em; }
+    .filter-strip {
+      display: flex;
+      gap: 4px;
+      background: #e2e8f0;
+      padding: 3px;
+      border-radius: 8px;
+    }
+    .ftab {
+      padding: 5px 13px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      transition: all .13s;
+    }
+    .ftab.active { background: #fff; color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+    .fcard {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      margin-bottom: 9px;
+      overflow: hidden;
+      transition: box-shadow .15s;
+    }
+    .fcard:hover { box-shadow: 0 3px 12px rgba(0,0,0,.08); }
+    .fcard-head {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .sev-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sd-H { background: var(--high); box-shadow: 0 0 7px rgba(239,68,68,.55); }
+    .sd-M { background: var(--moderate); box-shadow: 0 0 7px rgba(245,158,11,.45); }
+    .sd-L { background: var(--low); box-shadow: 0 0 7px rgba(16,185,129,.45); }
+    .sd-I { background: var(--info); box-shadow: 0 0 7px rgba(59,130,246,.45); }
+    .sd-G { background: var(--genai); box-shadow: 0 0 7px rgba(139,92,246,.45); }
+    .fcard-title { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: -.01em; }
+    .fcard-sub { font-size: 11px; color: #94a3b8; margin-top: 1px; font-weight: 400; }
+    .sev-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      flex-shrink: 0;
+    }
+    .sb-H { background: rgba(239,68,68,.1); color: var(--high); border: 1px solid rgba(239,68,68,.2); }
+    .sb-M { background: rgba(245,158,11,.1); color: #d97706; border: 1px solid rgba(245,158,11,.2); }
+    .sb-L { background: rgba(16,185,129,.1); color: #059669; border: 1px solid rgba(16,185,129,.2); }
+    .sb-I { background: rgba(59,130,246,.1); color: var(--info); border: 1px solid rgba(59,130,246,.2); }
+    .sb-G { background: rgba(139,92,246,.1); color: var(--genai); border: 1px solid rgba(139,92,246,.2); }
+    .issue-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      flex-shrink: 0;
+      background: #f8fafc;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    .chevron { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: #94a3b8; transition: transform .2s; flex-shrink: 0; }
+    .fcard.open .chevron { transform: rotate(180deg); }
+    .fcard-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+    .fcard.open .fcard-body { display: block; }
+    .fcard-desc { font-size: 13px; line-height: 1.65; color: var(--text-secondary); padding: 13px 0 4px; }
+    .section-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #94a3b8;
+      margin: 14px 0 8px;
+    }
+    .advisory-box {
+      padding: 13px 15px;
+      border-radius: 9px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .advisory-head { font-weight: 700; color: #9a3412; margin-bottom: 4px; font-size: 13px; }
+    .advisory-what { color: #7c2d12; }
+    .advisory-risklist { margin: 8px 0 0 18px; color: #7c2d12; }
+    .advisory-risklist li { margin-bottom: 3px; }
+    .fix-box {
+      padding: 13px 15px;
+      border-radius: 9px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      font-size: 12px;
+      line-height: 1.65;
+      color: #14532d;
+    }
+    .fix-box ul { margin-left: 18px; }
+    .fix-box li { margin-bottom: 3px; }
+    .detail-list { display: flex; flex-direction: column; gap: 7px; }
+    .detail-item { padding: 10px 13px; border-radius: 8px; font-size: 12px; line-height: 1.55; }
+    .di-red { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; }
+    .di-yellow { background: #fffbeb; border: 1px solid #fde68a; color: #78350f; }
+    .di-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #14532d; }
+    .di-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a5f; }
+    .di-violet { background: #f5f3ff; border: 1px solid #ddd6fe; color: #4c1d95; }
+    .disclaimer-box {
+      padding: 9px 13px;
+      border-radius: 8px;
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      font-size: 11px;
+      color: #78716c;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+    .prereq-box {
+      padding: 13px 15px;
+      border-radius: 9px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      font-size: 12px;
+      line-height: 1.65;
+      color: #0c4a6e;
+    }
+    .prereq-head { font-weight: 700; color: #0369a1; margin-bottom: 4px; }
+    .prereq-list { margin-left: 18px; margin-top: 6px; }
+    .prereq-list li { margin-bottom: 2px; }
+    .docs-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1px solid rgba(255, 127, 86, .22);
+      border-radius: 6px;
+      background: rgba(255, 127, 86, .05);
+      transition: all .13s;
+    }
+    .doc-link:hover { background: rgba(255, 127, 86, .12); border-color: rgba(255, 127, 86, .4); }
+
+    /* ── AI Widget ── */
+    .ai-widget {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: min(420px, calc(100vw - 28px));
+      height: min(560px, calc(100vh - 130px));
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(15,23,42,.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 350;
+    }
+    .ai-widget.open { display: flex; }
+    .ai-widget.maximized {
+      height: min(820px, calc(100vh - 40px));
+    }
+    .ai-head {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .ai-head-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+    .ai-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-expand,
+    .ai-close {
+      border: 1px solid rgba(148,163,184,.4);
+      background: rgba(15,23,42,.4);
+      color: #cbd5e1;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 5px 8px;
+      font-family: var(--mono);
+    }
+    .ai-expand {
+      min-width: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .ai-expand:hover,
+    .ai-close:hover {
+      border-color: rgba(255,127,86,.55);
+      color: #ffffff;
+      background: rgba(255,127,86,.16);
+    }
+    .ai-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      min-height: 0;
+    }
+    .ai-log {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 2px;
+    }
+    .ai-bubble {
+      max-width: 88%;
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .ai-bubble.user {
+      align-self: flex-end;
+      background: rgba(59,130,246,.12);
+      border: 1px solid rgba(59,130,246,.25);
+    }
+    .ai-bubble.assistant {
+      align-self: flex-start;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+    .ai-bubble.error {
+      align-self: flex-start;
+      color: #991b1b;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.2);
+    }
+    .ai-input {
+      width: 100%;
+      min-height: 92px;
+      max-height: 150px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-family: var(--ui);
+      font-size: 13px;
+      color: var(--text-primary);
+      background: #fff;
+      outline: none;
+    }
+    .ai-input:focus { border-color: var(--accent); }
+    .ai-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .ai-send {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), #ff7f56);
+      cursor: pointer;
+    }
+    .ai-send:disabled { opacity: .55; cursor: not-allowed; }
+    .ai-template-panel {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .ai-template-panel summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+    .ai-template-panel summary::-webkit-details-marker { display: none; }
+    .ai-template-panel summary::after {
+      content: '+';
+      font-size: 16px;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .ai-template-panel[open] summary {
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    .ai-template-panel[open] summary::after {
+      content: '\2212';
+    }
+    .ai-template-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+    }
+    .ai-template-btn {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      background: #fff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .ai-template-btn:hover {
+      border-color: var(--accent);
+      background: rgba(255,127,86,.06);
+      color: #0f172a;
+    }
+
+    /* ── PDF Button ── */
+    .btn-pdf {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, var(--accent), #ff7f56);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 9px 17px;
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255, 127, 86, .28);
+      transition: opacity .15s, box-shadow .15s;
+      white-space: nowrap;
+      align-self: center;
+    }
+    .btn-pdf:hover { opacity: .87; box-shadow: 0 6px 20px rgba(255, 127, 86, .38); }
+    .btn-pdf:disabled { opacity: .52; cursor: not-allowed; }
+
+    @media (max-width: 1180px) {
+      .charts, .detail-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      header {
+        padding: 16px 20px;
+      }
+      aside {
+        position: static;
+        width: 100%;
+        height: auto;
+        top: auto;
+        left: auto;
+        bottom: auto;
+      }
+      .layout { flex-direction: column; }
+      main {
+        margin-left: 0;
+        width: 100%;
+      }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <img src="/branding/kodez_logo.svg" alt="Kodez CheckMate Agent logo" class="logo-mark" />
+    <div>
+      <div class="logo-text">Kodez CheckMate</div>
+      <div class="logo-sub">AI-Powered SecOps Orchestration for Auth0</div>
+    </div>
+  </div>
+  <div class="head-right">
+    <a href="/blog.html" class="top-blog-link">Blog</a>
+    <a href="/learn-more.html" class="top-blog-link">Learn More</a>
+    <div class="hackathon-label">Authorized to Act: Auth0 for AI Agents</div>
+    <div class="badge"><span class="badge-dot"></span>TOKEN VAULT</div>
+    <div id="user-area"></div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <a href="/" class="nav-item home-link">Home</a>
+    <div id="navOverview" class="nav-item active">All Scans Overview</div>
+    <div id="navAIAgent" class="nav-item">AI Agent</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;padding:8px 6px 6px;">Scan History</div>
+    <div id="scanList"></div>
+  </aside>
+
+  <main>
+    <section id="viewOverview" class="view active">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Security Overview</div>
+          <div class="page-sub">Aggregate analysis across all imported scans</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label-row">
+            <div class="stat-label">Total Scans</div>
+            <button id="btnSyncScans" class="stat-refresh" type="button" title="Sync reports and refresh scans" onclick="syncReportsAndRefresh()">↻</button>
+          </div>
+          <div class="stat-value" id="ovTotalScans">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Latest Scan</div>
+          <div class="stat-value" id="ovLatestScan" style="font-size:18px;line-height:1.3">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Latest High Findings</div>
+          <div class="stat-value" id="ovLatestHigh">-</div>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="card">
+          <h3>Findings by Severity - All Scans</h3>
+          <div class="chart-box"><canvas id="ovBar"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Severity Trend Over Time</h3>
+          <div class="chart-box"><canvas id="ovLine"></canvas></div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-title">Scan History - Click a row to view details</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date &amp; Time</th>
+              <th>High</th>
+              <th>Moderate</th>
+              <th>Low</th>
+              <th>Info</th>
+              <th>GenAI</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="ovTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="viewScan" class="view">
+      <div class="page-head">
+        <div>
+          <div class="page-title" id="svTitle">Scan Details</div>
+          <div class="page-sub" id="svSub"></div>
+        </div>
+        <button id="btnPdfReport" class="btn-pdf" type="button" onclick="generatePDFReport()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+          Generate PDF Report
+        </button>
+      </div>
+
+      <div class="stats" id="svStats"></div>
+
+      <div class="detail-grid">
+        <div class="card">
+          <h3>Severity Distribution</h3>
+          <div class="chart-box"><canvas id="svDonut"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Findings by Severity</h3>
+          <div class="chart-box"><canvas id="svHBar"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="findings-bar">
+          <div class="findings-count" id="findingCount">Findings</div>
+          <div class="filter-strip">
+            <button class="ftab active" data-f="all" onclick="setFilter('all')">All</button>
+            <button class="ftab" data-f="High" onclick="setFilter('High')" style="color:var(--high)">High</button>
+            <button class="ftab" data-f="Moderate" onclick="setFilter('Moderate')" style="color:#d97706">Moderate</button>
+            <button class="ftab" data-f="Low" onclick="setFilter('Low')" style="color:#059669">Low</button>
+            <button class="ftab" data-f="Info" onclick="setFilter('Info')" style="color:var(--info)">Info</button>
+            <button class="ftab" data-f="GenAI" onclick="setFilter('GenAI')" style="color:var(--genai)">GenAI</button>
+          </div>
+        </div>
+        <div id="svFindings" class="finding-list"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="aiWidget" class="ai-widget" aria-live="polite">
+  <div class="ai-head">
+    <div class="ai-head-title">AI Agent — Security &amp; JIRA</div>
+    <div class="ai-head-actions">
+      <button id="aiExpand" class="ai-expand" type="button" aria-label="Maximize AI chat" title="Maximize AI chat">+</button>
+      <button id="aiClose" class="ai-close" type="button">Minimize</button>
+    </div>
+  </div>
+  <div class="ai-body">
+    <div id="aiLog" class="ai-log">
+      <div class="ai-bubble assistant">Ask me about scan findings, or use commands like:<br><br>• <strong>"Create a JIRA board for this scan"</strong> — creates a Kanban board and one ticket per finding for the selected scan.<br>• <strong>"Create a JIRA ticket for the MFA finding"</strong> — creates a single targeted ticket.<br>• <strong>"Trigger the Checkmate scan"</strong> — runs the GitHub workflow.</div>
+    </div>
+    <details class="ai-template-panel">
+      <summary>Prompt Templates</summary>
+      <div class="ai-template-grid">
+        <button class="ai-template-btn" id="quickRunScan" type="button" onclick="quickRunSecurityScan()">Run Auth0 CheckMate security scan</button>
+        <button class="ai-template-btn" id="quickBoard" type="button" onclick="quickCreateBoard()">Create JIRA Board for this scan</button>
+        <button class="ai-template-btn" id="quickHighTickets" type="button" onclick="quickHighTickets()">Create tickets for High findings</button>
+        <button class="ai-template-btn" id="quickConfluenceSummary" type="button" onclick="quickPublishExecutiveSummary()">Publish executive summary to Confluence</button>
+        <button class="ai-template-btn" id="quickTeamsAlert" type="button" onclick="quickAlertTeamsFindings()">Alert Teams on scan findings</button>
+      </div>
+    </details>
+    <div id="aiApprovalBox" style="display:none;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;padding:10px;margin-bottom:8px"></div>
+    <textarea id="aiInput" class="ai-input" placeholder="Ask a question, or say 'create a JIRA board for this scan'..."></textarea>
+    <div class="ai-actions">
+      <button id="aiSend" class="ai-send" type="button" onclick="askAIAgent()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  Chart.defaults.devicePixelRatio = Math.max(window.devicePixelRatio || 1, 1.5);
+
+  const COLORS = {
+    High: '#ef4444',
+    Moderate: '#f59e0b',
+    Low: '#10b981',
+    Info: '#3b82f6',
+    GenAI: '#8b5cf6',
+  };
+  const SEV_KEYS = ['High', 'Moderate', 'Low', 'Info', 'GenAI'];
+  const SEV_ORDER = { High: 0, Moderate: 1, Low: 2, Info: 3, GenAI: 4 };
+  const SEV_CLS = { High: 'H', Moderate: 'M', Low: 'L', Info: 'I', GenAI: 'G' };
+  const STATUS_DI = { red: 'di-red', yellow: 'di-yellow', green: 'di-green', blue: 'di-blue', violet: 'di-violet' };
+
+  const state = {
+    scans: [],
+    currentScan: null,
+    scanCache: new Map(),
+    issueCountsByScan: new Map(),
+    charts: {},
+    activeFilter: 'all',
+  };
+
+  const navOverview = document.getElementById('navOverview');
+  const navAIAgent = document.getElementById('navAIAgent');
+  const scanList = document.getElementById('scanList');
+  const viewOverview = document.getElementById('viewOverview');
+  const viewScan = document.getElementById('viewScan');
+  const aiWidget = document.getElementById('aiWidget');
+  const aiLog = document.getElementById('aiLog');
+  const aiInput = document.getElementById('aiInput');
+  const aiSend = document.getElementById('aiSend');
+  const aiExpand = document.getElementById('aiExpand');
+  const aiClose = document.getElementById('aiClose');
+  const AI_CHAT_STORAGE_KEY = 'checkmate-dashboard-ai-chat';
+  const DEFAULT_AI_MESSAGES = [
+    {
+      role: 'assistant',
+      text: 'Ask me about scan findings, or use commands like:\n\n• "Create a JIRA board for this scan" — creates a Kanban board and one ticket per finding for the selected scan.\n• "Create a JIRA ticket for the MFA finding" — creates a single targeted ticket.\n• "Trigger the Checkmate scan" — runs the GitHub workflow.',
+    },
+  ];
+  let aiMessages = loadStoredAIMessages();
+  let aiBusy = false;
+  let pendingAIApproval = null;
+
+  function loadStoredAIMessages() {
+    try {
+      const raw = sessionStorage.getItem(AI_CHAT_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (Array.isArray(parsed) && parsed.length) {
+        return parsed.filter((msg) => msg && typeof msg.role === 'string' && typeof msg.text === 'string');
+      }
+    } catch {
+      // Ignore invalid session data and restore defaults.
+    }
+    return [...DEFAULT_AI_MESSAGES];
+  }
+
+  function storeAIMessages(messages) {
+    sessionStorage.setItem(AI_CHAT_STORAGE_KEY, JSON.stringify(messages));
+  }
+
+  function renderAIHistory() {
+    aiLog.innerHTML = '';
+    aiMessages.forEach((msg) => renderAIBubble(msg.role, msg.text));
+    aiLog.scrollTop = aiLog.scrollHeight;
+  }
+
+  async function loadHeaderUser() {
+    try {
+      const me = await fetch('/api/me').then((r) => r.json());
+      if (!me.authenticated || !me.user) return;
+      const user = me.user;
+      document.getElementById('user-area').innerHTML = `
+        <div class="user-pill">
+          <img src="${user.picture}" alt="${user.name}" class="user-avatar"/>
+          <span class="user-name">${user.name}</span>
+          <a href="/logout" class="btn-text">Sign out</a>
+        </div>`;
+    } catch {
+      // Keep dashboard usable even if profile lookup fails.
+    }
+  }
+
+  function destroyChart(name) {
+    if (state.charts[name]) {
+      state.charts[name].destroy();
+      state.charts[name] = null;
+    }
+  }
+
+  function showOverview() {
+    viewOverview.classList.add('active');
+    viewScan.classList.remove('active');
+    navOverview.classList.add('active');
+    navAIAgent.classList.remove('active');
+    document.querySelectorAll('.scan-item').forEach((el) => el.classList.remove('active'));
+  }
+
+  function showScan(id) {
+    viewOverview.classList.remove('active');
+    viewScan.classList.add('active');
+    navOverview.classList.remove('active');
+    navAIAgent.classList.remove('active');
+    document.querySelectorAll('.scan-item').forEach((el) => {
+      el.classList.toggle('active', el.dataset.id === id);
+    });
+  }
+
+  function openAIWidget() {
+    showOverview();
+    aiWidget.classList.add('open');
+    navAIAgent.classList.add('active');
+    aiInput.focus();
+    // Show JIRA connection hint if not already checked
+    if (!openAIWidget._jiraChecked) {
+      openAIWidget._jiraChecked = true;
+      fetch('/api/jira/status').then(async (r) => ({ status: r.status, data: await r.json() })).then(({ status, data }) => {
+        if (!data.connected && status !== 429 && !data.rateLimited) {
+          appendAIBubble('assistant', 'Tip: JIRA is not connected. Connect it from the home page to enable "create JIRA ticket" commands from this chat.');
+        }
+      }).catch(() => {/* non-fatal */});
+    }
+  }
+
+  function closeAIWidget() {
+    aiWidget.classList.remove('open');
+    navAIAgent.classList.remove('active');
+  }
+
+  function toggleAIWidgetMaximize() {
+    const isMaximized = aiWidget.classList.toggle('maximized');
+    if (aiExpand) {
+      aiExpand.textContent = isMaximized ? '−' : '+';
+      aiExpand.setAttribute('aria-label', isMaximized ? 'Restore AI chat size' : 'Maximize AI chat');
+      aiExpand.setAttribute('title', isMaximized ? 'Restore AI chat size' : 'Maximize AI chat');
+    }
+    aiLog.scrollTop = aiLog.scrollHeight;
+  }
+
+  function renderAIBubble(role, text) {
+    const el = document.createElement('div');
+    el.className = `ai-bubble ${role}`;
+    // Render URLs as clickable links and preserve newlines
+    const escaped = text
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const linked = escaped.replace(
+      /(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:var(--accent);word-break:break-all;">$1</a>'
+    );
+    el.innerHTML = linked.replace(/\n/g, '<br>');
+    aiLog.appendChild(el);
+  }
+
+  function appendAIBubble(role, text) {
+    aiMessages.push({ role, text });
+    renderAIBubble(role, text);
+    storeAIMessages(aiMessages);
+    aiLog.scrollTop = aiLog.scrollHeight;
+  }
+
+  function findingKey(finding) {
+    const title = String(finding?.title || '').trim().toLowerCase();
+    const severity = String(finding?.severity || 'Info').trim().toLowerCase();
+    return `${severity}::${title}`;
+  }
+
+  function findingLabel(finding) {
+    return `${finding?.severity || 'Info'}: ${finding?.title || 'Untitled finding'}`;
+  }
+
+  function uniqueFindings(findings) {
+    const seen = new Set();
+    const out = [];
+    for (const f of findings || []) {
+      const key = findingKey(f);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(f);
+    }
+    return out;
+  }
+
+  function compareTwoScans(latestDetail, previousDetail) {
+    const latestFindings = uniqueFindings(latestDetail?.findings || []);
+    const previousFindings = uniqueFindings(previousDetail?.findings || []);
+
+    const latestMap = new Map(latestFindings.map((f) => [findingKey(f), f]));
+    const previousMap = new Map(previousFindings.map((f) => [findingKey(f), f]));
+
+    const fixed = [];
+    const newFindings = [];
+    const persistent = [];
+
+    for (const [key, prevFinding] of previousMap.entries()) {
+      if (!latestMap.has(key)) fixed.push(prevFinding);
+      else persistent.push(prevFinding);
+    }
+
+    for (const [key, latestFinding] of latestMap.entries()) {
+      if (!previousMap.has(key)) newFindings.push(latestFinding);
+    }
+
+    return { fixed, persistent, newFindings };
+  }
+
+  function buildScanContext() {
+    if (!state.scans.length) {
+      return 'No scans are currently loaded.';
+    }
+
+    const latest = state.scans[0];
+    const latestCounts = countsForScan(latest);
+    const totals = state.scans.reduce((acc, scan) => {
+      const c = countsForScan(scan);
+      acc.High += c.High;
+      acc.Moderate += c.Moderate;
+      acc.Low += c.Low;
+      acc.Info += c.Info;
+      acc.GenAI += c.GenAI;
+      return acc;
+    }, { High: 0, Moderate: 0, Low: 0, Info: 0, GenAI: 0 });
+
+    const topLines = [
+      `Total scans: ${state.scans.length}`,
+      `Latest scan: ${latest.file_name} at ${formatDate(latest.scanned_at)}`,
+      `Latest severity counts: High ${latestCounts.High}, Moderate ${latestCounts.Moderate}, Low ${latestCounts.Low}, Info ${latestCounts.Info}, GenAI ${latestCounts.GenAI}`,
+      `Aggregate severity counts: High ${totals.High}, Moderate ${totals.Moderate}, Low ${totals.Low}, Info ${totals.Info}, GenAI ${totals.GenAI}`,
+    ];
+
+    const detail = state.currentScan;
+    if (detail?.findings?.length) {
+      // Include all findings grouped by severity so the AI can create tickets per finding
+      const allFindings = detail.findings
+        .slice()
+        .sort((a, b) => (SEV_ORDER[a.severity] ?? 9) - (SEV_ORDER[b.severity] ?? 9));
+
+      const groupedFindings = {};
+      for (const f of allFindings) {
+        const sev = f.severity || 'Info';
+        if (!groupedFindings[sev]) groupedFindings[sev] = [];
+        groupedFindings[sev].push(f);
+      }
+      for (const [sev, findings] of Object.entries(groupedFindings)) {
+        const lines = findings.map((f) => `  - ${f.title || 'Untitled'}${f.description ? ': ' + String(f.description).slice(0, 120) : ''}`).join('\n');
+        topLines.push(`${sev} findings (${findings.length}):\n${lines}`);
+      }
+    }
+
+    // Add explicit comparison context for the latest two scans.
+    if (state.scans.length >= 2) {
+      const latestScan = state.scans[0];
+      const previousScan = state.scans[1];
+      const latestDetail = state.scanCache.get(latestScan.id);
+      const previousDetail = state.scanCache.get(previousScan.id);
+
+      if (latestDetail && previousDetail) {
+        const latestCounts = countsForScan(latestScan);
+        const previousCounts = countsForScan(previousScan);
+
+        const delta = {
+          High: latestCounts.High - previousCounts.High,
+          Moderate: latestCounts.Moderate - previousCounts.Moderate,
+          Low: latestCounts.Low - previousCounts.Low,
+          Info: latestCounts.Info - previousCounts.Info,
+          GenAI: latestCounts.GenAI - previousCounts.GenAI,
+        };
+
+        const comparison = compareTwoScans(latestDetail, previousDetail);
+
+        topLines.push(`Comparison target: latest two scans.`);
+        topLines.push(`Latest scan filename: ${latestScan.file_name}`);
+        topLines.push(`Previous scan filename: ${previousScan.file_name}`);
+        topLines.push(
+          `Severity delta (latest - previous): High ${delta.High}, Moderate ${delta.Moderate}, Low ${delta.Low}, Info ${delta.Info}, GenAI ${delta.GenAI}`
+        );
+        topLines.push(
+          `Fixed findings (present in previous, absent in latest): ${comparison.fixed.length}`
+        );
+        topLines.push(
+          `Persistent findings (present in both scans): ${comparison.persistent.length}`
+        );
+        topLines.push(
+          `New findings (present in latest, absent in previous): ${comparison.newFindings.length}`
+        );
+
+        const fixedList = comparison.fixed.slice(0, 20).map(findingLabel).join(' | ') || 'None';
+        const persistentList = comparison.persistent.slice(0, 20).map(findingLabel).join(' | ') || 'None';
+        const newList = comparison.newFindings.slice(0, 20).map(findingLabel).join(' | ') || 'None';
+
+        topLines.push(`Fixed findings list: ${fixedList}`);
+        topLines.push(`Persistent findings list: ${persistentList}`);
+        topLines.push(`New findings list: ${newList}`);
+      }
+    }
+
+    return topLines.join('\n');
+  }
+
+  function renderDashboardApprovalBox() {
+    const box = document.getElementById('aiApprovalBox');
+    if (!box) return;
+    if (!pendingAIApproval) {
+      box.style.display = 'none';
+      box.innerHTML = '';
+      return;
+    }
+    const plan = pendingAIApproval.plan || {};
+    const steps = Array.isArray(plan.steps) ? plan.steps : [];
+    box.style.display = 'block';
+    box.innerHTML = `
+      <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:6px">Approval Required</div>
+      <div style="font-size:13px;color:#0f172a">${plan.summary || 'Confirm task execution.'}</div>
+      <div style="font-size:12px;color:#64748b;margin-top:6px">${steps.length ? steps.map((s, i) => `${i + 1}. ${s}`).join('<br/>') : ''}</div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
+        <button class="ftab" type="button" onclick="cancelDashboardApproval()" style="background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;color:#334155">Cancel</button>
+        <button class="ftab" type="button" onclick="approveDashboardExecution()" style="background:linear-gradient(135deg,#ff7f56,#ff7f56);color:#fff;border:1px solid rgba(255, 127, 86, .45);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Approve & Execute</button>
+      </div>
+    `;
+  }
+
+  async function askAIAgent(overrideMessage, options = {}) {
+    if (aiBusy) return;
+    const question = overrideMessage !== undefined ? overrideMessage : (aiInput.value || '').trim();
+    if (!question) return;
+
+    if (!options.skipUserEcho) {
+      appendAIBubble('user', question);
+      if (overrideMessage === undefined) aiInput.value = '';
+    }
+    aiBusy = true;
+    aiSend.disabled = true;
+    aiSend.textContent = 'Thinking...';
+
+    try {
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: question,
+          context: buildScanContext(),
+          scanId: state.currentScan?.id || '',
+          approvalId: options.approvalId || '',
+          approve: options.approve === true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        appendAIBubble('error', data.error || 'Failed to get response from AI Agent.');
+      } else {
+        if (data.approvalRequired && data.approval) {
+          pendingAIApproval = data.approval;
+          renderDashboardApprovalBox();
+          const plan = data.approval.plan || {};
+          const steps = Array.isArray(plan.steps) ? plan.steps : [];
+          const details = steps.length ? `\n${steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : '';
+          appendAIBubble('assistant', `${data.reply || 'Approval required.'}${details}`);
+        } else {
+          pendingAIApproval = null;
+          renderDashboardApprovalBox();
+          const reply = data.reply || 'No answer returned.';
+          appendAIBubble('assistant', reply);
+          // If the AI just triggered a workflow, start polling as a
+          // webhook-independent fallback for the scan refresh.
+          if (/workflow triggered successfully|checkmate.*triggered|scan.*triggered/i.test(reply)) {
+            startWorkflowPolling();
+          }
+        }
+      }
+    } catch {
+      appendAIBubble('error', 'Network error while contacting AI Agent.');
+    } finally {
+      aiBusy = false;
+      aiSend.disabled = false;
+      aiSend.textContent = 'Send';
+    }
+  }
+
+  function cancelDashboardApproval() {
+    pendingAIApproval = null;
+    renderDashboardApprovalBox();
+  }
+
+  function approveDashboardExecution() {
+    if (!pendingAIApproval) return;
+    askAIAgent(pendingAIApproval.message, {
+      approve: true,
+      approvalId: pendingAIApproval.id,
+      skipUserEcho: true,
+    });
+  }
+
+  function quickCreateBoard() {
+    openAIWidget();
+    primeAIPrompt('Create a JIRA board for this scan and create a ticket for each finding.');
+  }
+
+  function quickRunSecurityScan() {
+    openAIWidget();
+    primeAIPrompt('Run Auth0 CheckMate security scan');
+  }
+
+  function quickHighTickets() {
+    openAIWidget();
+    primeAIPrompt('Create JIRA tickets for all High severity findings in this scan.');
+  }
+
+  function quickPublishExecutiveSummary() {
+    openAIWidget();
+    primeAIPrompt('Publish executive summary to Confluence for the latest security scan findings.');
+  }
+
+  function quickAlertTeamsFindings() {
+    openAIWidget();
+    primeAIPrompt('Alert Teams on the latest scan findings by publishing the latest scan summary to the integrated Teams channel.');
+  }
+
+  function primeAIPrompt(promptText) {
+    aiInput.value = promptText;
+    aiInput.focus();
+    aiBusy = false;
+    aiSend.disabled = false;
+    aiSend.textContent = 'Send';
+  }
+
+  function formatDate(value) {
+    return new Date(value).toLocaleString();
+  }
+
+  function severityCounts(scan) {
+    return {
+      High: Number(scan.cnt_high || 0),
+      Moderate: Number(scan.cnt_moderate || 0),
+      Low: Number(scan.cnt_low || 0),
+      Info: Number(scan.cnt_info || 0),
+      GenAI: Number(scan.cnt_genai || 0),
+    };
+  }
+
+  function issueCountForFinding(finding) {
+    return Array.isArray(finding?.details) ? finding.details.length : 0;
+  }
+
+  function severityIssueCounts(findings) {
+    const counts = { High: 0, Moderate: 0, Low: 0, Info: 0, GenAI: 0 };
+    for (const f of findings || []) {
+      const sev = f.severity || 'Info';
+      const issues = issueCountForFinding(f);
+      if (Object.prototype.hasOwnProperty.call(counts, sev)) {
+        counts[sev] += issues;
+      } else {
+        counts.Info += issues;
+      }
+    }
+    return counts;
+  }
+
+  async function loadScans() {
+    const res = await fetch('/api/scans');
+    const data = await res.json();
+    if (!res.ok || !data.scans) {
+      scanList.innerHTML = `<div class="empty">Failed to load scans: ${data.error || 'Unknown error'}</div>`;
+      return;
+    }
+
+    state.scans = data.scans;
+  await hydrateIssueCounts();
+    renderSidebar();
+    renderOverview();
+
+    if (state.scans.length) {
+      await openScan(state.scans[0].id);
+      showOverview();
+    }
+  }
+
+  async function syncReportsAndRefresh() {
+    const btn = document.getElementById('btnSyncScans');
+    if (btn?.disabled) return;
+    const original = btn ? btn.textContent : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '…';
+    }
+
+    try {
+      const res = await fetch('/api/reports');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to sync reports.');
+      }
+      await loadScans();
+    } catch (err) {
+      // Non-blocking: show a brief status indicator instead of an alert.
+      console.error('[Sync]', err.message);
+      if (btn) btn.title = err.message;
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = original || '↻';
+      }
+    }
+  }
+
+  // ── Polling fallback: refresh scans after workflow completes ─────────────
+  // Used when the webhook / SSE path is unavailable (e.g. no public URL in
+  // local dev). Polls GET /api/runs every 15 s for up to 10 minutes.
+  // Stops as soon as a recently-created run is found with conclusion 'success'.
+  let _pollTimer = null;
+  function stopWorkflowPolling() {
+    if (_pollTimer !== null) { clearInterval(_pollTimer); _pollTimer = null; }
+  }
+  function startWorkflowPolling() {
+    stopWorkflowPolling();
+    const startedAt = new Date(Date.now() - 60_000).toISOString(); // 60 s tolerance
+    const deadline = Date.now() + 10 * 60_000; // stop after 10 min
+    _pollTimer = setInterval(async () => {
+      if (Date.now() > deadline) { stopWorkflowPolling(); return; }
+      try {
+        const res = await fetch('/api/runs');
+        if (!res.ok) return;
+        const data = await res.json();
+        const run = (data.runs || []).find(
+          r => r.conclusion === 'success' && r.status === 'completed' && r.createdAt >= startedAt
+        );
+        if (run) {
+          stopWorkflowPolling();
+          await syncReportsAndRefresh();
+        }
+      } catch { /* silent */ }
+    }, 15_000);
+  }
+  // Expose so wf-toast can cancel it when SSE fires first
+  window.stopWorkflowPolling = stopWorkflowPolling;
+
+  async function hydrateIssueCounts() {
+    const jobs = state.scans.map(async (scan) => {
+      let detail = state.scanCache.get(scan.id);
+      if (!detail) {
+        const res = await fetch(`/api/scans/${scan.id}`);
+        const data = await res.json();
+        if (!res.ok || !data.scan) return;
+        detail = data.scan;
+        state.scanCache.set(scan.id, detail);
+      }
+      const counts = severityIssueCounts(detail.findings || []);
+      state.issueCountsByScan.set(scan.id, counts);
+    });
+
+    await Promise.all(jobs);
+  }
+
+  function countsForScan(scan) {
+    return state.issueCountsByScan.get(scan.id) || severityCounts(scan);
+  }
+
+  function renderSidebar() {
+    if (!state.scans.length) {
+      scanList.innerHTML = '<div class="empty">No scans found. Import reports from home.</div>';
+      return;
+    }
+
+    scanList.innerHTML = state.scans.map((s) => {
+      const c = countsForScan(s);
+      return `
+        <div class="scan-item" data-id="${s.id}">
+          <div class="scan-date">${formatDate(s.scanned_at)}</div>
+          <div class="scan-file">${s.file_name}</div>
+          <div class="scan-counts">
+            <span class="b b-H">H ${c.High}</span>
+            <span class="b b-M">M ${c.Moderate}</span>
+            <span class="b b-L">L ${c.Low}</span>
+            <span class="b b-I">I ${c.Info}</span>
+            <span class="b b-G">G ${c.GenAI}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    document.querySelectorAll('.scan-item').forEach((el) => {
+      el.addEventListener('click', () => openScan(el.dataset.id));
+    });
+  }
+
+  function renderOverview() {
+    const scans = [...state.scans].slice().reverse();
+    document.getElementById('ovTotalScans').textContent = state.scans.length;
+
+    if (!state.scans.length) {
+      document.getElementById('ovLatestScan').textContent = '-';
+      document.getElementById('ovLatestHigh').textContent = '-';
+      document.getElementById('ovTableBody').innerHTML = '';
+      destroyChart('ovBar');
+      destroyChart('ovLine');
+      return;
+    }
+
+    const latest = state.scans[0];
+    const latestCounts = countsForScan(latest);
+    document.getElementById('ovLatestScan').textContent = formatDate(latest.scanned_at);
+    document.getElementById('ovLatestHigh').textContent = latestCounts.High;
+
+    const labels = scans.map((s) => new Date(s.scanned_at).toLocaleDateString());
+    const bySev = scans.map((s) => countsForScan(s));
+
+    destroyChart('ovBar');
+    state.charts.ovBar = new Chart(document.getElementById('ovBar'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: SEV_KEYS.map((k) => ({
+          label: k,
+          data: bySev.map((c) => c[k]),
+          backgroundColor: COLORS[k],
+          borderRadius: 4,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+      },
+    });
+
+    destroyChart('ovLine');
+    state.charts.ovLine = new Chart(document.getElementById('ovLine'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: SEV_KEYS.map((k) => ({
+          label: k,
+          data: bySev.map((c) => c[k]),
+          borderColor: COLORS[k],
+          backgroundColor: COLORS[k] + '22',
+          tension: 0.3,
+          fill: false,
+          pointRadius: 3,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    document.getElementById('ovTableBody').innerHTML = state.scans.map((s) => {
+      const c = countsForScan(s);
+      const total = c.High + c.Moderate + c.Low + c.Info + c.GenAI;
+      return `
+        <tr data-id="${s.id}">
+          <td>${formatDate(s.scanned_at)}</td>
+          <td>${c.High}</td>
+          <td>${c.Moderate}</td>
+          <td>${c.Low}</td>
+          <td>${c.Info}</td>
+          <td>${c.GenAI}</td>
+          <td>${total}</td>
+        </tr>`;
+    }).join('');
+
+    document.querySelectorAll('#ovTableBody tr').forEach((tr) => {
+      tr.addEventListener('click', () => openScan(tr.dataset.id));
+    });
+  }
+
+  async function openScan(scanId) {
+    if (!scanId) return;
+
+    let scan = state.scanCache.get(scanId);
+    if (!scan) {
+      const res = await fetch(`/api/scans/${scanId}`);
+      const data = await res.json();
+      if (!res.ok || !data.scan) {
+        alert(data.error || 'Failed to load scan');
+        return;
+      }
+      scan = data.scan;
+      state.scanCache.set(scanId, scan);
+    }
+
+    state.currentScan = scan;
+    renderScanDetail(scan);
+    showScan(scanId);
+  }
+
+  function renderScanDetail(scan) {
+    document.getElementById('svTitle').textContent = 'Scan Details';
+    document.getElementById('svSub').textContent = `${scan.file_name} | ${formatDate(scan.scanned_at)}`;
+
+    const findings = scan.findings || [];
+    const counts = severityIssueCounts(findings);
+    document.getElementById('svStats').innerHTML = SEV_KEYS.map((k) => {
+      return `
+        <div class="stat">
+          <div class="stat-label">${k}</div>
+          <div class="stat-value" style="color:${COLORS[k]}">${counts[k]}</div>
+        </div>`;
+    }).join('');
+
+    destroyChart('svDonut');
+    state.charts.svDonut = new Chart(document.getElementById('svDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: SEV_KEYS,
+        datasets: [{
+          data: SEV_KEYS.map((k) => counts[k]),
+          backgroundColor: SEV_KEYS.map((k) => COLORS[k]),
+          borderWidth: 0,
+          hoverOffset: 5,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '64%',
+        plugins: { legend: { position: 'bottom' } },
+      },
+    });
+
+    destroyChart('svHBar');
+    state.charts.svHBar = new Chart(document.getElementById('svHBar'), {
+      type: 'bar',
+      data: {
+        labels: SEV_KEYS,
+        datasets: [{
+          label: 'Issues',
+          data: SEV_KEYS.map((k) => counts[k]),
+          backgroundColor: SEV_KEYS.map((k) => COLORS[k]),
+          borderRadius: 6,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    state.activeFilter = 'all';
+    resetFilterTabs();
+    renderFindings(findings);
+  }
+
+  function setFilter(filter) {
+    state.activeFilter = filter;
+    document.querySelectorAll('.ftab').forEach((tab) => {
+      tab.classList.toggle('active', tab.dataset.f === filter);
+    });
+    if (state.currentScan) renderFindings(state.currentScan.findings || []);
+  }
+
+  function resetFilterTabs() {
+    document.querySelectorAll('.ftab').forEach((tab) => {
+      tab.classList.toggle('active', tab.dataset.f === 'all');
+    });
+  }
+
+  function renderFindings(findings) {
+    const list = state.activeFilter === 'all'
+      ? [...findings]
+      : findings.filter((f) => f.severity === state.activeFilter);
+
+    list.sort((a, b) => (SEV_ORDER[a.severity] ?? 9) - (SEV_ORDER[b.severity] ?? 9));
+
+    const totalIssues = findings.reduce((sum, f) => sum + issueCountForFinding(f), 0);
+    const filteredIssues = list.reduce((sum, f) => sum + issueCountForFinding(f), 0);
+
+    document.getElementById('findingCount').textContent = state.activeFilter === 'all'
+      ? `${totalIssues} Issues`
+      : `${filteredIssues} of ${totalIssues} Issues - ${state.activeFilter}`;
+
+    document.getElementById('svFindings').innerHTML = list.map((f) => buildFindingHTML(f)).join('')
+      || '<div class="empty">No findings in this scan.</div>';
+  }
+
+  function buildFindingHTML(f) {
+    const sc = SEV_CLS[f.severity] || 'I';
+    const adv = f.advisory || {};
+    const advDesc = adv.description || {};
+    const whyList = Array.isArray(advDesc.why_its_risky) ? advDesc.why_its_risky : [];
+    const hasAdv = !!(adv.issue || advDesc.what_it_is || whyList.length);
+    const hasFix = Array.isArray(adv.how_to_fix) && adv.how_to_fix.length > 0;
+    const docs = f.docsPath || f.docs_path || [];
+    const details = Array.isArray(f.details) ? f.details : [];
+    const issuesCount = details.length;
+
+    const advisoryHTML = hasAdv ? `
+      <div class="section-lbl">Advisory</div>
+      <div class="advisory-box">
+        ${adv.issue ? `<div class="advisory-head">${adv.issue}</div>` : ''}
+        ${advDesc.what_it_is ? `<div class="advisory-what">${advDesc.what_it_is}</div>` : ''}
+        ${whyList.length ? `
+          <div style="margin-top:8px;font-weight:700;color:#9a3412;">Key Risks:</div>
+          <ul class="advisory-risklist">${whyList.map((r) => `<li>${r}</li>`).join('')}</ul>` : ''}
+      </div>` : '';
+
+    const fixHTML = hasFix ? `
+      <div class="section-lbl">How to Fix</div>
+      <div class="fix-box"><ul>${adv.how_to_fix.map((h) => `<li>${h}</li>`).join('')}</ul></div>` : '';
+
+    const prereq = f.pre_requisites;
+    const prereqHTML = prereq ? `
+      <div class="section-lbl">Prerequisites</div>
+      <div class="prereq-box">
+        <div class="prereq-head">${prereq.title || ''}</div>
+        <div>${prereq.description || ''}</div>
+        ${Array.isArray(prereq.items) ? `<ul class="prereq-list">${prereq.items.map((i) => `<li>${i}</li>`).join('')}</ul>` : ''}
+      </div>` : '';
+
+    const detailsHTML = `
+      <div class="section-lbl">Details (${details.length} issue${details.length !== 1 ? 's' : ''})</div>
+      <div class="detail-list">
+        ${details.map((d) => `
+          <div class="detail-item ${STATUS_DI[d.status] || 'di-blue'}">
+            ${(d.item_name || d.name) ? `<strong>${d.item_name || d.name}: </strong>` : ''}${d.message || ''}
+          </div>`).join('')}
+      </div>`;
+
+    const docsHTML = docs.length ? `
+      <div class="docs-row">
+        ${docs.map((url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="doc-link">Auth0 Docs</a>`).join('')}
+      </div>` : '';
+
+    const disclaimerHTML = f.disclaimer ? `
+      <div class="disclaimer-box"><span>i</span><span>${f.disclaimer}</span></div>` : '';
+
+    return `
+      <div class="fcard" id="fc-${f.id || f.name}">
+        <div class="fcard-head" onclick="toggleFinding('${f.id || f.name}')">
+          <div class="sev-dot sd-${sc}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="fcard-title">${f.title || ''}</div>
+            <div class="fcard-sub">${f.severity_message || ''}</div>
+          </div>
+          <span class="issue-badge">${issuesCount} issue${issuesCount !== 1 ? 's' : ''}</span>
+          <span class="sev-badge sb-${sc}">${f.severity || 'Info'}</span>
+          <div class="chevron">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="fcard-body">
+          <div class="fcard-desc">${f.description || ''}</div>
+          ${disclaimerHTML}
+          ${advisoryHTML}
+          ${fixHTML}
+          ${prereqHTML}
+          ${detailsHTML}
+          ${docsHTML}
+        </div>
+      </div>`;
+  }
+
+  function toggleFinding(id) {
+    const el = document.getElementById(`fc-${id}`);
+    if (el) el.classList.toggle('open');
+  }
+
+  navOverview.addEventListener('click', showOverview);
+  navAIAgent.addEventListener('click', openAIWidget);
+  aiExpand.addEventListener('click', toggleAIWidgetMaximize);
+  aiClose.addEventListener('click', closeAIWidget);
+  aiSend.addEventListener('click', askAIAgent);
+  aiInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      askAIAgent();
+    }
+  });
+  async function generatePDFReport() {
+    const scan = state.currentScan;
+    if (!scan) { alert('No scan selected.'); return; }
+    if (!window.jspdf) { alert('PDF library not loaded. Please refresh the page and try again.'); return; }
+
+    const btn = document.getElementById('btnPdfReport');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Generating\u2026'; }
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      const PW = 210, PH = 297, MG = 14, CW = PW - MG * 2;
+      let y = 0;
+
+      const findings = [...(scan.findings || [])].sort(
+        (a, b) => (SEV_ORDER[a.severity] ?? 9) - (SEV_ORDER[b.severity] ?? 9)
+      );
+      const counts = state.issueCountsByScan.get(scan.id) || severityIssueCounts(findings);
+
+      const sevRgb = {
+        High:     [239, 68, 68],
+        Moderate: [245, 158, 11],
+        Low:      [16, 185, 129],
+        Info:     [59, 130, 246],
+        GenAI:    [139, 92, 246],
+      };
+      const dark   = [15, 23, 42];
+      const accent = [255, 127, 86];
+      const muted  = [100, 116, 139];
+      const bdr    = [226, 232, 240];
+      const bgCol  = [248, 250, 252];
+      const wht    = [255, 255, 255];
+
+      const fc = (c) => pdf.setFillColor(c[0], c[1], c[2]);
+      const tc = (c) => pdf.setTextColor(c[0], c[1], c[2]);
+      const dc = (c) => pdf.setDrawColor(c[0], c[1], c[2]);
+      const fnt = (style, size) => { pdf.setFont('helvetica', style); if (size) pdf.setFontSize(size); };
+      const newPageIfNeeded = (need = 30) => { if (y + need > PH - 12) { pdf.addPage(); y = MG; } };
+
+      const logoDataUrl = await (async () => {
+        try {
+          const img = await new Promise((resolve, reject) => {
+            const logo = new Image();
+            logo.onload = () => resolve(logo);
+            logo.onerror = reject;
+            logo.src = '/branding/kodez_logo.svg';
+          });
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || 143;
+          canvas.height = img.naturalHeight || 115;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return null;
+          ctx.drawImage(img, 0, 0);
+          return canvas.toDataURL('image/png');
+        } catch (logoErr) {
+          console.warn('[PDF] logo load skipped:', logoErr);
+          return null;
+        }
+      })();
+
+      // ── Header ────────────────────────────────────────────────────────────
+      fc(dark); pdf.rect(0, 0, PW, 28, 'F');
+      const logoW = 10;
+      const logoH = 8;
+      let headerX = MG;
+      if (logoDataUrl) {
+        pdf.addImage(logoDataUrl, 'PNG', MG, 4.5, logoW, logoH, undefined, 'FAST');
+        headerX = MG + logoW + 3;
+      }
+      tc(wht); fnt('bold', 16); pdf.text('Kodez CheckMate', headerX, 11);
+      tc([148, 163, 184]); fnt('normal', 8);
+      pdf.text('AI-Powered SecOps Orchestration for Auth0', headerX, 18);
+      pdf.text('Generated: ' + new Date().toLocaleString(), PW - MG, 18, { align: 'right' });
+      fc(accent); pdf.rect(0, 27.5, PW, 1.5, 'F');
+      y = 36;
+
+      // ── Scan metadata ─────────────────────────────────────────────────────
+      tc(dark); fnt('bold', 14); pdf.text('Auth0 CheckMate Security Scan Report', MG, y); y += 7;
+      tc(muted); fnt('normal', 9);
+      const fnLine = pdf.splitTextToSize('File: ' + scan.file_name, CW);
+      pdf.text(fnLine[0], MG, y); y += 5;
+      pdf.text('Scanned: ' + formatDate(scan.scanned_at), MG, y); y += 11;
+
+      // ── Severity summary boxes ────────────────────────────────────────────
+      const bW = (CW - 12) / 5;
+      SEV_KEYS.forEach((k, i) => {
+        const bx = MG + i * (bW + 3);
+        const rgb = sevRgb[k];
+        fc(bgCol); dc(rgb); pdf.roundedRect(bx, y, bW, 22, 2, 2, 'FD');
+        tc(rgb);
+        fnt('bold', 7);  pdf.text(k.toUpperCase(), bx + bW / 2, y + 8,  { align: 'center' });
+        fnt('bold', 15); pdf.text(String(counts[k] || 0), bx + bW / 2, y + 17, { align: 'center' });
+      });
+      y += 28;
+
+      // ── Charts (captured from live Chart.js canvases) ─────────────────────
+      const donutEl = document.getElementById('svDonut');
+      const hbarEl  = document.getElementById('svHBar');
+      if (donutEl && hbarEl) {
+        try {
+          const cHalf = (CW - 6) / 2;
+          const cHt   = Math.round(cHalf * 0.68);
+          fc(bgCol); dc(bdr);
+          pdf.roundedRect(MG,              y, cHalf, cHt + 10, 2, 2, 'FD');
+          pdf.roundedRect(MG + cHalf + 6,  y, cHalf, cHt + 10, 2, 2, 'FD');
+          pdf.addImage(donutEl.toDataURL('image/png', 1.0), 'PNG', MG + 1,             y + 1, cHalf - 2, cHt);
+          pdf.addImage(hbarEl.toDataURL('image/png',  1.0), 'PNG', MG + cHalf + 7,    y + 1, cHalf - 2, cHt);
+          tc(muted); fnt('bold', 8);
+          pdf.text('Severity Distribution', MG + cHalf / 2,            y + cHt + 7, { align: 'center' });
+          pdf.text('Findings by Severity',  MG + cHalf + 6 + cHalf / 2, y + cHt + 7, { align: 'center' });
+          y += cHt + 16;
+        } catch (chartErr) { console.warn('[PDF] chart capture:', chartErr); }
+      }
+
+      // ── Findings heading ──────────────────────────────────────────────────
+      newPageIfNeeded(22);
+      tc(dark); dc(bdr); fnt('bold', 12);
+      pdf.text('Findings  (' + findings.length + ' total)', MG, y); y += 3;
+      pdf.line(MG, y, MG + CW, y); y += 7;
+
+      // ── Each finding ──────────────────────────────────────────────────────
+      for (const f of findings) {
+        const sc = sevRgb[f.severity] || sevRgb.Info;
+        const details = Array.isArray(f.details) ? f.details : [];
+        newPageIfNeeded(18);
+
+        // Severity pill + title
+        const titleLines = pdf.splitTextToSize(f.title || 'Untitled', CW - 26);
+        const titleBlockH = Math.max(5.5, titleLines.length * 4.8);
+        newPageIfNeeded(titleBlockH + 6);
+        const pillY = y + (titleBlockH - 5.5) / 2; // vertically centre pill against title
+        fc(sc); pdf.roundedRect(MG, pillY, 22, 5.5, 1.5, 1.5, 'F');
+        tc(wht); fnt('bold', 6.5);
+        pdf.text((f.severity || 'Info').toUpperCase(), MG + 11, pillY + 3.8, { align: 'center' });
+        tc(dark); fnt('bold', 10);
+        pdf.text(titleLines, MG + 25, y + 4.2, { lineHeightFactor: 1.35 });
+        y += titleBlockH + 2;
+
+        // Severity message subtitle
+        if (f.severity_message) {
+          tc([148, 163, 184]); fnt('normal', 7.5);
+          pdf.text(f.severity_message, MG + 2, y); y += 4.5;
+        }
+
+        // Description
+        if (f.description) {
+          newPageIfNeeded(10);
+          tc([71, 85, 105]); fnt('normal', 8);
+          const dLines = pdf.splitTextToSize(f.description, CW - 4).slice(0, 4);
+          pdf.text(dLines, MG + 2, y);
+          y += dLines.length * 4 + 2;
+        }
+
+        // Individual issues list
+        if (details.length) {
+          newPageIfNeeded(10);
+          tc(muted); fnt('bold', 7.5);
+          pdf.text('Issues (' + details.length + '):', MG + 2, y); y += 4.5;
+          for (const d of details.slice(0, 20)) {
+            newPageIfNeeded(7);
+            tc([51, 65, 85]); fnt('normal', 7.5);
+            const raw = '\u2022 ' + [d.item_name || d.name, d.message].filter(Boolean).join(': ');
+            const iLines = pdf.splitTextToSize(raw, CW - 10).slice(0, 2);
+            pdf.text(iLines, MG + 4, y);
+            y += iLines.length * 3.8 + 0.6;
+          }
+          if (details.length > 20) {
+            newPageIfNeeded(5); tc([148, 163, 184]); fnt('normal', 7);
+            pdf.text('  \u2026 and ' + (details.length - 20) + ' more', MG + 4, y); y += 4;
+          }
+          y += 1;
+        }
+
+        // How to Fix
+        const fixes = f.advisory && f.advisory.how_to_fix;
+        if (Array.isArray(fixes) && fixes.length) {
+          newPageIfNeeded(10);
+          tc([5, 150, 105]); fnt('bold', 7.5);
+          pdf.text('How to Fix:', MG + 2, y); y += 4;
+          for (const fix of fixes.slice(0, 4)) {
+            newPageIfNeeded(7);
+            tc([20, 83, 45]); fnt('normal', 7.5);
+            const fLines = pdf.splitTextToSize('\u2022 ' + fix, CW - 10).slice(0, 2);
+            pdf.text(fLines, MG + 4, y);
+            y += fLines.length * 3.8 + 0.6;
+          }
+          y += 1;
+        }
+
+        // Separator
+        newPageIfNeeded(6);
+        dc(bdr); pdf.line(MG, y + 1.5, MG + CW, y + 1.5); y += 6;
+      }
+
+      // ── Footer on every page ──────────────────────────────────────────────
+      const totalPages = pdf.getNumberOfPages();
+      for (let p = 1; p <= totalPages; p++) {
+        pdf.setPage(p);
+        fc(bgCol); pdf.rect(0, PH - 10, PW, 10, 'F');
+        dc(bdr); pdf.line(0, PH - 10, PW, PH - 10);
+        tc([148, 163, 184]); fnt('normal', 7);
+        const shortFn = scan.file_name.length > 55 ? scan.file_name.slice(0, 53) + '\u2026' : scan.file_name;
+        pdf.text('Kodez CheckMate \u2014 ' + shortFn, MG, PH - 4);
+        pdf.text('Page ' + p + ' of ' + totalPages, PW - MG, PH - 4, { align: 'right' });
+      }
+
+      // ── Download ──────────────────────────────────────────────────────────
+      const safeName = scan.file_name.replace(/\.json$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+      pdf.save('checkmate-report-' + safeName + '.pdf');
+
+    } catch (err) {
+      console.error('[PDF] Error:', err);
+      alert('Failed to generate PDF: ' + err.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+    }
+  }
+
+  renderAIHistory();
+
+  window.setFilter = setFilter;
+  window.toggleFinding = toggleFinding;
+  window.quickCreateBoard = quickCreateBoard;
+  window.askAIAgent = askAIAgent;
+  window.approveDashboardExecution = approveDashboardExecution;
+  window.cancelDashboardApproval = cancelDashboardApproval;
+  window.quickRunSecurityScan = quickRunSecurityScan;
+  window.quickHighTickets = quickHighTickets;
+  window.quickPublishExecutiveSummary = quickPublishExecutiveSummary;
+  window.quickAlertTeamsFindings = quickAlertTeamsFindings;
+  window.toggleAIWidgetMaximize = toggleAIWidgetMaximize;
+  window.generatePDFReport = generatePDFReport;
+  window.syncReportsAndRefresh = syncReportsAndRefresh;
+
+  loadHeaderUser();
+  loadScans();
+</script>
+<script src="/wf-toast.js"></script>
+</body>
+</html>

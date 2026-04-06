@@ -1,0 +1,3549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kodez CheckMate</title>
+  <link rel="icon" type="image/svg+xml" href="/branding/kodez_logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #f0f4f8;
+      --surface:  #ffffff;
+      --surface2: #f8fafc;
+      --border:   #e2e8f0;
+      --accent:   #ff7f56;
+      --accent2:  #ff7f56;
+      --green:    #10b981;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --blue:     #3b82f6;
+      --text:     #0f172a;
+      --muted:    #64748b;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Plus Jakarta Sans', sans-serif;
+      --ui:       'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--ui); min-height: 100vh;
+      display: flex; flex-direction: column; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(15,23,42,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,.04) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px; border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px); background: #0f172a;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+    }
+    .logo-text  { font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: -.3px; color: #ffffff; }
+    .logo-sub   { font-family: var(--ui); font-size: 11px; font-weight: 400; color: #94a3b8; letter-spacing: .01em; }
+
+    .badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(58,140,235,.12); border: 1px solid rgba(58,140,235,.3);
+      border-radius: 999px; padding: 5px 12px;
+      font-family: var(--mono); font-size: 11px; color: var(--blue);
+    }
+    .hackathon-label {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(148,163,184,.38);
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: #cbd5e1;
+      background: rgba(15,23,42,.24);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+    .badge-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+      box-shadow: 0 0 6px currentColor; animation: blink 2s infinite;
+    }
+    .top-dashboard-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(58,140,235,.12); border: 1px solid rgba(58,140,235,.3);
+      border-radius: 999px; padding: 5px 12px;
+      font-family: var(--mono); font-size: 11px; color: var(--blue);
+      text-decoration: none; letter-spacing: .04em; text-transform: uppercase;
+      transition: background .2s, box-shadow .2s;
+    }
+    .top-dashboard-link:hover { background: rgba(58,140,235,.2); box-shadow: 0 0 14px rgba(58,140,235,.3); }
+    .top-blog-link {
+      display: inline-flex; align-items: center;
+      border: 1px solid rgba(148,163,184,.38);
+      border-radius: 999px; padding: 5px 12px;
+      color: #cbd5e1; background: rgba(15,23,42,.24);
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: .04em; text-transform: uppercase;
+      text-decoration: none; transition: all .2s;
+    }
+    .top-blog-link:hover {
+      color: #ffffff;
+      border-color: rgba(255,127,86,.55);
+      background: rgba(255,127,86,.12);
+      box-shadow: 0 0 14px rgba(255,127,86,.2);
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .user-pill {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px; padding: 6px 14px 6px 6px; font-size: 13px;
+    }
+    .user-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    .user-name   { font-weight: 600; color: #ffffff; }
+    .btn-text {
+      background: none; border: none; color: #94a3b8; cursor: pointer;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
+      text-transform: uppercase; transition: color .2s; margin-left: 8px;
+    }
+    .btn-text:hover { color: #ffffff; }
+
+    /* ── Landing (pre-login) v2 ── */
+    body:not(.app-mode) {
+      background: #0a0b0d;
+      color: #e8eaf0;
+    }
+    body:not(.app-mode)::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    body:not(.app-mode)::after {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(255, 127, 86, .10) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body:not(.app-mode) header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(10, 11, 13, .85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    body:not(.app-mode) .logo-mark {
+      width: 32px;
+      height: 32px;
+    }
+    body:not(.app-mode) .logo-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e8eaf0;
+      letter-spacing: .01em;
+    }
+    body:not(.app-mode) .logo-sub {
+      font-size: 10px;
+      color: #6b7280;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+    body:not(.app-mode) .hackathon-label {
+      padding: 5px 12px;
+      background: rgba(255, 127, 86, .08);
+      border: 1px solid rgba(255, 127, 86, .3);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #ff7f56;
+      font-family: var(--mono);
+      letter-spacing: .03em;
+      text-transform: none;
+    }
+    body:not(.app-mode) .badge {
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    body:not(.app-mode) .top-blog-link {
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    body:not(.app-mode) .top-blog-link:hover {
+      color: #ffd7ca;
+      border-color: #ff7f56;
+      background: rgba(255, 127, 86, .25);
+      box-shadow: 0 0 14px rgba(255,127,86,.25);
+    }
+    body:not(.app-mode) .badge-dot {
+      background: #ff7f56;
+      box-shadow: 0 0 6px #ff7f56;
+    }
+    body:not(.app-mode) main {
+      display: block;
+      padding: 0;
+    }
+    body:not(.app-mode) #login-screen {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      text-align: left;
+      display: block;
+    }
+
+    .landing-v2 {
+      position: relative;
+      z-index: 1;
+      color: #e8eaf0;
+      font-family: var(--ui);
+    }
+    .landing-v2 .hero {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 100px 40px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .landing-v2 .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #ff7f56;
+      margin-bottom: 20px;
+    }
+    .landing-v2 .hero-eyebrow span {
+      width: 24px;
+      height: 1px;
+      background: #ff7f56;
+    }
+    .landing-v2 h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      margin-bottom: 24px;
+      white-space: normal;
+      max-width: none;
+    }
+    .landing-v2 h1 .accent {
+      color: #ff7f56;
+      text-shadow: 0 0 40px rgba(255, 127, 86, .35);
+      background: none;
+      -webkit-text-fill-color: currentColor;
+    }
+    .landing-v2 h1 .dim {
+      color: #9ca3af;
+      background: none;
+      -webkit-text-fill-color: currentColor;
+    }
+    .landing-v2 .hero-desc {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #9ca3af;
+      margin-bottom: 36px;
+      max-width: 520px;
+    }
+    .landing-v2 .nowrap {
+      white-space: nowrap;
+    }
+    .landing-v2 .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .landing-v2 .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: #ff7f56;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 0 30px rgba(255, 127, 86, .35), 0 4px 16px rgba(0,0,0,.4);
+      letter-spacing: .01em;
+    }
+    .landing-v2 .btn-primary:hover {
+      background: #ff7f56;
+      box-shadow: 0 0 50px rgba(255, 127, 86, .55), 0 4px 20px rgba(0,0,0,.5);
+      transform: translateY(-1px);
+    }
+    .landing-v2 .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .landing-v2 .btn-ghost:hover {
+      border-color: rgba(255,255,255,.15);
+      color: #e8eaf0;
+    }
+    .landing-v2 .connector-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .landing-v2 .connector-row-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-right: 4px;
+      font-family: var(--mono);
+    }
+    .landing-v2 .connector-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #9ca3af;
+    }
+    .landing-v2 .connector-chip .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .landing-v2 .hero-card {
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .landing-v2 .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ff7f56, transparent);
+    }
+    .landing-v2 .hero-card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .landing-v2 .hero-card-header span {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      font-family: var(--mono);
+    }
+    .landing-v2 .traffic-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .landing-v2 .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .landing-v2 .step-item:last-child {
+      border-bottom: none;
+    }
+    .landing-v2 .step-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      background: rgba(255, 127, 86, .12);
+      border: 1px solid rgba(255, 127, 86, .3);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff7f56;
+      font-family: var(--mono);
+    }
+    .landing-v2 .step-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e8eaf0;
+      margin-bottom: 3px;
+    }
+    .landing-v2 .step-text p {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    .landing-v2 .secure-banner,
+    .landing-v2 .features,
+    .landing-v2 .connectors-section,
+    .landing-v2 .ai-section,
+    .landing-v2 .vault-section {
+      max-width: 1160px;
+      margin: 0 auto 100px;
+      padding: 0 40px;
+    }
+    .landing-v2 .secure-banner {
+      margin-bottom: 80px;
+    }
+    .landing-v2 .secure-inner {
+      background: rgba(255, 127, 86, .05);
+      border: 1px solid rgba(255, 127, 86, .2);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .landing-v2 .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #ff7f56;
+      margin-bottom: 14px;
+    }
+    .landing-v2 .section-title {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .landing-v2 .section-sub {
+      font-size: 16px;
+      color: #6b7280;
+      line-height: 1.65;
+      max-width: 580px;
+    }
+    .landing-v2 .features-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .landing-v2 .features-header .section-sub {
+      margin: 0 auto;
+    }
+    .landing-v2 .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .landing-v2 .feature-card {
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      grid-template-rows: auto auto;
+      column-gap: 12px;
+      row-gap: 8px;
+      align-items: center;
+    }
+    .landing-v2 .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 127, 86, .12);
+      border: 1px solid rgba(255, 127, 86, .25);
+      display: grid;
+      place-items: center;
+      margin-bottom: 0;
+      font-size: 20px;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .landing-v2 .feature-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ff7f56;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .landing-v2 .feature-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 0;
+      letter-spacing: -.01em;
+      grid-column: 2;
+      grid-row: 1;
+      align-self: center;
+    }
+    .landing-v2 .feature-card p {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.55;
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .landing-v2 .connectors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .landing-v2 .connector-card {
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .landing-v2 .connector-logo {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .landing-v2 .connector-logo svg {
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+    .landing-v2 .connector-body h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .landing-v2 .connector-body p {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    .landing-v2 .connector-tag {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--mono);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .landing-v2 .ai-card {
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 24px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .landing-v2 .ai-card-left {
+      padding: 52px 48px;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+    .landing-v2 .ai-card-right {
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #13161c;
+    }
+    .landing-v2 .ai-action-item {
+      background: #0f1115;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .landing-v2 .ai-action-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ff7f56;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 4px;
+    }
+    .landing-v2 .ai-action-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .landing-v2 .ai-action-desc {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    .landing-v2 .prompt-example {
+      margin: 0 0 28px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 127, 86, .25);
+      background: rgba(255, 127, 86, .06);
+    }
+    .landing-v2 .prompt-example-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #ff7f56;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .landing-v2 .prompt-example-quote {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e8eaf0;
+      margin-bottom: 10px;
+    }
+    .landing-v2 .prompt-example-note {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #9ca3af;
+    }
+    .landing-v2 .vault-card {
+      background: linear-gradient(135deg, #0f1115 0%, #131720 50%, #0f1115 100%);
+      border: 1px solid rgba(255, 127, 86, .2);
+      border-radius: 24px;
+      padding: 60px 56px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .landing-v2 .vault-title {
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .landing-v2 .vault-desc {
+      font-size: 15px;
+      color: #6b7280;
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+    .landing-v2 .vault-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .landing-v2 .vault-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .landing-v2 .vault-feature::before {
+      content: '✓';
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, .15);
+      border: 1px solid rgba(34, 197, 94, .3);
+      display: grid;
+      place-items: center;
+      color: #22c55e;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .landing-v2 .vault-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .landing-v2 .vault-lock {
+      width: 100px;
+      height: 100px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255, 127, 86, .2), rgba(255, 127, 86, .05));
+      border: 1px solid rgba(255, 127, 86, .35);
+      display: grid;
+      place-items: center;
+      font-size: 44px;
+      box-shadow: 0 0 60px rgba(255, 127, 86, .2);
+    }
+    .landing-v2 .vault-lock svg {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+    .landing-v2 .vault-label-chip {
+      padding: 6px 16px;
+      border: 1px solid rgba(255, 127, 86, .25);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ff7f56;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .landing-v2 .cta-section {
+      max-width: 800px;
+      margin: 0 auto 120px;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .landing-v2 .cta-section h2 {
+      font-size: clamp(32px, 4vw, 50px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .landing-v2 .cta-section p {
+      font-size: 16px;
+      color: #6b7280;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .landing-v2 footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1160px;
+      margin: 0 auto;
+      color: #6b7280;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .landing-v2 .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .landing-v2 .footer-logo {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 1100px) {
+      .landing-v2 .hero {
+        gap: 48px;
+      }
+    }
+    @media (max-width: 900px) {
+      body:not(.app-mode) header {
+        padding: 0 20px;
+      }
+      .landing-v2 .hero {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .landing-v2 .features-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .landing-v2 .connectors-grid {
+        grid-template-columns: 1fr;
+      }
+      .landing-v2 .ai-card {
+        grid-template-columns: 1fr;
+      }
+      .landing-v2 .ai-card-left {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+      }
+      .landing-v2 .vault-card {
+        grid-template-columns: 1fr;
+      }
+      .landing-v2 .vault-visual {
+        display: none;
+      }
+    }
+    @media (max-width: 700px) {
+      body:not(.app-mode) header {
+        padding: 10px 14px;
+        height: auto;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      body:not(.app-mode) header > div:last-child {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .landing-v2 .hero,
+      .landing-v2 .features,
+      .landing-v2 .connectors-section,
+      .landing-v2 .ai-section,
+      .landing-v2 .vault-section,
+      .landing-v2 .cta-section,
+      .landing-v2 .secure-banner {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .landing-v2 .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .landing-v2 .hero {
+        padding-top: 56px;
+        padding-bottom: 56px;
+      }
+      .landing-v2 .hero-cta-row {
+        gap: 10px;
+      }
+      .landing-v2 .btn-primary,
+      .landing-v2 .btn-ghost {
+        width: 100%;
+        justify-content: center;
+      }
+      .landing-v2 .cta-section h2 {
+        font-size: clamp(26px, 9vw, 40px);
+      }
+      .landing-v2 footer {
+        padding: 24px 20px;
+      }
+    }
+
+    /* ── Main ── */
+    main {
+      position: relative; z-index: 1; flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 20px 24px; gap: 20px;
+    }
+    body.app-mode main {
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: 24px;
+      gap: 0;
+    }
+
+    /* ── Login screen ── */
+    #login-screen {
+      text-align: left;
+      width: 100%;
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .login-col {
+      min-width: 0;
+    }
+    .login-col.main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-col.details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .eyebrow {
+      font-family: var(--mono); font-size: 10.5px;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px; font-weight: 500;
+    }
+    h1 { font-family: var(--sans); font-size: clamp(24px,3vw,40px); font-weight: 800; line-height: 1.06; letter-spacing: -.8px; margin-bottom: 10px; }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .platform-desc {
+      font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--text);
+      line-height: 1.55; margin-bottom: 10px; max-width: 60ch;
+      border-left: 3px solid var(--accent); padding-left: 10px;
+    }
+    .subtitle { color: var(--muted); font-size: 13.5px; line-height: 1.65; margin-bottom: 14px; font-weight: 400; max-width: 64ch; letter-spacing: .01em; }
+
+    .integration-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+    }
+    .integration-pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .token-vault-note {
+      background: rgba(58,140,235,.08);
+      border: 1px solid rgba(58,140,235,.22);
+      color: #1e3a8a;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    .flow-steps {
+      display: flex; flex-direction: column; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; margin-bottom: 0; text-align: left;
+    }
+    .flow-step { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; line-height: 1.5; font-weight: 500; }
+    .step-num {
+      width: 22px; height: 22px; min-width: 22px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      font-family: var(--mono); font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .step-text { color: var(--muted); }
+    .step-text strong { color: var(--text); }
+
+    .capability-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 0;
+    }
+    .capability-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+      margin-bottom: 10px;
+    }
+    .capability-item {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      letter-spacing: .01em;
+    }
+    .capability-item + .capability-item {
+      margin-top: 8px;
+    }
+    .capability-item strong {
+      color: var(--text);
+    }
+
+    .btn-login {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 8px;
+      padding: 12px 22px; font-family: var(--ui);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: transform .15s, box-shadow .2s;
+    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(235,92,58,.3); }
+
+    @media (min-width: 981px) {
+      #login-screen h1 {
+        white-space: nowrap;
+        max-width: 100%;
+      }
+      #login-screen h1 span {
+        white-space: nowrap;
+      }
+    }
+
+    /* ── App screen ── */
+    #app-screen { width: 100%; max-width: 1180px; }
+    body.app-mode #app-screen { max-width: none; }
+    .app-shell {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .side-menu {
+      background: #0f172a;
+      border: 1px solid rgba(148,163,184,.28);
+      border-radius: 14px;
+      padding: 16px;
+      position: sticky;
+      top: 24px;
+      min-height: calc(100vh - 118px);
+    }
+    .menu-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+    .menu-link {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .menu-link + .menu-link { margin-top: 8px; }
+    .menu-link:hover {
+      color: #fff;
+      background: rgba(148,163,184,.14);
+      border-color: rgba(148,163,184,.34);
+    }
+    .menu-link.active {
+      color: #fff;
+      border-color: rgba(255,127,86,.45);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 8px 24px rgba(255,127,86,.22);
+    }
+    .menu-group {
+      margin-top: 8px;
+      padding-left: 10px;
+      border-left: 1px solid rgba(148,163,184,.28);
+    }
+    .menu-group-label {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      background: rgba(148,163,184,.06);
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .menu-link.sub {
+      font-size: 12px;
+      padding: 9px 10px;
+      margin-left: 2px;
+    }
+    .menu-link.sub + .menu-link.sub { margin-top: 6px; }
+    .app-center { min-width: 0; }
+    .app-pane { display: none; }
+    .app-pane.active { display: block; }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+    }
+    .card-header {
+      display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px;
+    }
+    .card-title { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+    .card-meta  { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .btn-dashboard {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--blue);
+      border-radius: 8px; padding: 8px 12px;
+      color: var(--blue); font-family: var(--mono); font-size: 11px;
+      text-transform: uppercase; letter-spacing: .06em;
+      text-decoration: none; transition: background .2s, box-shadow .2s;
+    }
+    .btn-dashboard:hover { background: rgba(58,140,235,.12); box-shadow: 0 4px 14px rgba(58,140,235,.22); }
+
+    /* ── Connection banner ── */
+    .connection-banner {
+      display: flex; align-items: center; gap: 14px;
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
+      border: 1px solid; font-size: 14px;
+    }
+    .connection-banner.connected {
+      background: rgba(58,235,140,.06); border-color: rgba(58,235,140,.2);
+    }
+    .connection-banner.disconnected {
+      background: rgba(240,208,90,.06); border-color: rgba(240,208,90,.2);
+    }
+    .connection-banner.error {
+      background: rgba(235,58,92,.06); border-color: rgba(235,58,92,.2);
+    }
+    .conn-icon { font-size: 22px; flex-shrink: 0; }
+    .conn-body { flex: 1; }
+    .conn-title { font-weight: 700; margin-bottom: 3px; }
+    .conn-title.connected    { color: var(--green); }
+    .conn-title.disconnected { color: var(--yellow); }
+    .conn-title.error        { color: var(--red); }
+    .conn-desc { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+    .btn-connect {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--yellow);
+      border-radius: 8px; padding: 10px 16px;
+      color: var(--yellow); font-family: var(--ui); font-size: 13px;
+      font-weight: 700; cursor: pointer; text-decoration: none;
+      transition: background .2s, box-shadow .2s; white-space: nowrap;
+    }
+    .btn-connect:hover { background: rgba(240,208,90,.1); box-shadow: 0 4px 16px rgba(240,208,90,.2); }
+
+    /* ── Fields ── */
+    .field-label {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    input[type="text"] {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-family: var(--ui); font-size: 13px; outline: none; transition: border-color .2s;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
+    select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--ui);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    select:focus { border-color: var(--accent); }
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    /* ── Trigger button ── */
+    .btn-trigger {
+      position: relative; display: flex; align-items: center;
+      justify-content: center; gap: 10px; width: 100%; padding: 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 10px;
+      font-family: var(--ui); font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: transform .15s, box-shadow .2s, opacity .2s;
+      overflow: hidden; margin-top: 20px;
+    }
+    .btn-trigger::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.12), transparent);
+    }
+    .btn-trigger:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(235,92,58,.4); }
+    .btn-trigger:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── Runs ── */
+    .runs-list { display: flex; flex-direction: column; gap: 10px; }
+    .runs-empty { text-align: center; padding: 32px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+    .run-item {
+      display: grid; grid-template-columns: 14px 1fr auto auto;
+      align-items: center; gap: 14px;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; text-decoration: none; color: var(--text);
+      transition: border-color .2s, background .2s;
+    }
+    .run-item:hover { border-color: var(--accent); background: rgba(235,92,58,.04); }
+    .run-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .run-dot.success    { background: var(--green);  box-shadow: 0 0 8px var(--green); }
+    .run-dot.failure    { background: var(--red);    box-shadow: 0 0 8px var(--red); }
+    .run-dot.in_progress,
+    .run-dot.queued     { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); animation: blink 1s infinite; }
+    .run-dot.cancelled  { background: var(--muted); }
+    .run-id     { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .run-status { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .run-status.success    { color: var(--green); }
+    .run-status.failure    { color: var(--red); }
+    .run-status.in_progress,
+    .run-status.queued     { color: var(--yellow); }
+    .run-status.cancelled  { color: var(--muted); }
+    .run-date { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; }
+
+    .btn-refresh {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); padding: 6px 10px; cursor: pointer; font-size: 14px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-refresh:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 22px; font-size: 13px; font-family: var(--mono);
+      opacity: 0; transition: opacity .25s, transform .25s;
+      pointer-events: none; z-index: 100; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error   { border-color: var(--red);   color: var(--red); }
+    #toast.info    { border-color: var(--blue);  color: var(--blue); }
+
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Repos list ── */
+    .repo-list { display: flex; flex-direction: column; gap: 8px; }
+    .repo-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; text-decoration: none;
+      color: var(--text); transition: border-color .2s, background .2s;
+    }
+    .repo-item:hover { border-color: var(--accent); background: rgba(235,92,58,.04); }
+    .repo-item.target { border-color: rgba(58,140,235,.4); background: rgba(58,140,235,.05); }
+    .repo-icon { font-size: 16px; flex-shrink: 0; }
+    .repo-name { font-family: var(--mono); font-size: 13px; font-weight: 600; flex: 1; }
+    .repo-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .repo-badge {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+      padding: 2px 8px; border-radius: 999px; flex-shrink: 0;
+    }
+    .repo-badge.private { background: rgba(235,92,58,.12); color: var(--accent); border: 1px solid rgba(235,92,58,.25); }
+    .repo-badge.public  { background: rgba(58,235,140,.08); color: var(--green); border: 1px solid rgba(58,235,140,.2); }
+    .repo-badge.target  { background: rgba(58,140,235,.12); color: var(--blue); border: 1px solid rgba(58,140,235,.3); }
+    .list-loading { text-align: center; padding: 24px; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+    .list-error   { padding: 14px 18px; background: rgba(235,58,92,.06); border: 1px solid rgba(235,58,92,.2); border-radius: 10px; color: var(--red); font-family: var(--mono); font-size: 12px; }
+
+    /* ── Workflows list ── */
+    .workflow-list { display: flex; flex-direction: column; gap: 8px; }
+    .workflow-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; text-decoration: none;
+      color: var(--text); transition: border-color .2s, background .2s;
+    }
+    .workflow-item:hover { border-color: var(--accent); background: rgba(235,92,58,.04); }
+    .workflow-item.target-wf { border-color: rgba(58,235,140,.4); background: rgba(58,235,140,.04); }
+    .wf-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .wf-indicator.active   { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .wf-indicator.disabled { background: var(--muted); }
+    .wf-name { font-family: var(--mono); font-size: 13px; flex: 1; }
+    .wf-path { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .wf-tag {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+      padding: 2px 8px; border-radius: 999px; flex-shrink: 0;
+    }
+    .wf-tag.target { background: rgba(58,235,140,.1); color: var(--green); border: 1px solid rgba(58,235,140,.25); }
+
+    /* ── Reports list ── */
+    .report-list { display: flex; flex-direction: column; gap: 8px; }
+    .report-file {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; text-decoration: none;
+      color: var(--text); transition: border-color .2s, background .2s;
+    }
+    .report-file:hover { border-color: var(--accent); background: rgba(235,92,58,.04); }
+    .report-icon { font-size: 18px; flex-shrink: 0; }
+    .report-name { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+    .report-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .report-badge {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+      padding: 2px 8px; border-radius: 999px; flex-shrink: 0;
+      background: rgba(58,140,235,.12); color: var(--blue); border: 1px solid rgba(58,140,235,.3);
+    }
+
+    /* ── AI Agent ── */
+    .ai-agent-wrap { display: flex; flex-direction: column; gap: 14px; }
+    .ai-chat-log {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: 12px;
+      min-height: 260px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ai-msg {
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .ai-msg.user {
+      align-self: flex-end;
+      background: rgba(58,140,235,.12);
+      border: 1px solid rgba(58,140,235,.3);
+      max-width: 80%;
+    }
+    .ai-msg.assistant {
+      align-self: flex-start;
+      background: #fff;
+      border: 1px solid var(--border);
+      max-width: 88%;
+    }
+    .ai-msg.error {
+      align-self: flex-start;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.2);
+      color: #991b1b;
+      max-width: 88%;
+    }
+    .ai-input {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--ui);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface2);
+      outline: none;
+    }
+    .ai-input:focus { border-color: var(--accent); }
+    .ai-actions { display: flex; justify-content: flex-end; }
+    .btn-ai-send {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      cursor: pointer;
+    }
+    .btn-ai-send:disabled { opacity: .55; cursor: not-allowed; }
+    .ai-suggest-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .ai-suggest-btn {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--ui);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .ai-suggest-btn:hover {
+      border-color: var(--accent);
+      background: rgba(235,92,58,.05);
+    }
+    .ai-approval-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ai-approval-box.open { display: flex; }
+    .ai-approval-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    .ai-approval-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .home-ai-widget {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: min(430px, calc(100vw - 32px));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 16px 50px rgba(15, 23, 42, .22);
+      display: none;
+      overflow: hidden;
+      z-index: 85;
+    }
+    .home-ai-widget.open {
+      display: flex;
+      flex-direction: column;
+    }
+    .home-ai-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .home-ai-close {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 4px 8px;
+      background: #fff;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .home-ai-close:hover { border-color: var(--accent); color: var(--text); }
+    .home-ai-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .home-ai-widget .ai-chat-log {
+      min-height: 220px;
+      max-height: 300px;
+    }
+    .home-ai-widget .ai-input {
+      min-height: 92px;
+    }
+
+    .jira-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .jira-textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: var(--ui);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface2);
+      outline: none;
+    }
+    .jira-textarea:focus { border-color: var(--accent); }
+
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .integration-card {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .integration-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .integration-name {
+      font-family: var(--sans);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .integration-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .status-pill.connected {
+      color: var(--green);
+      border-color: rgba(16,185,129,.3);
+      background: rgba(16,185,129,.08);
+    }
+    .status-pill.disconnected {
+      color: var(--yellow);
+      border-color: rgba(245,158,11,.28);
+      background: rgba(245,158,11,.08);
+    }
+    .status-pill.warning {
+      color: var(--blue);
+      border-color: rgba(59,130,246,.28);
+      background: rgba(59,130,246,.08);
+    }
+    .integration-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .integration-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .btn-secondary {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--ui);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(235,92,58,.05); }
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap: 16px;
+    }
+    .subcard {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .subcard-title {
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .subcard-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: -8px;
+      margin-bottom: 14px;
+    }
+    .action-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .approval-row {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .approval-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .approval-title {
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .approval-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .activity-item {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .activity-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .activity-type {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .activity-msg {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .activity-detail {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .helper-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      .card  { padding: 20px; }
+      .run-item { grid-template-columns: 14px 1fr auto; }
+      .run-date { display: none; }
+    }
+    @media (max-width: 980px) {
+      #login-screen {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .login-col.main,
+      .login-col.details {
+        justify-content: flex-start;
+      }
+      .integration-strip {
+        justify-content: flex-start;
+      }
+      .app-shell { grid-template-columns: 1fr; }
+      .integration-grid, .field-row, .split-grid, .quick-actions { grid-template-columns: 1fr; }
+      .side-menu {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .menu-title { grid-column: 1 / -1; margin-bottom: 0; }
+      .menu-link + .menu-link { margin-top: 0; }
+    }
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .logo {
+        width: 100%;
+      }
+      .logo-mark {
+        width: 40px;
+        height: 40px;
+      }
+      .logo-text {
+        font-size: 15px;
+      }
+      .logo-sub {
+        font-size: 10px;
+      }
+      header > div:last-child {
+        width: 100%;
+        gap: 8px !important;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      .hackathon-label {
+        font-size: 10px;
+        padding: 4px 9px;
+      }
+      .badge {
+        font-size: 10px;
+        padding: 4px 9px;
+      }
+      #login-screen {
+        gap: 12px;
+      }
+      .login-col.details {
+        gap: 10px;
+      }
+      h1 {
+        font-size: clamp(22px, 6.4vw, 30px);
+        line-height: 1.08;
+        letter-spacing: -.4px;
+      }
+      .subtitle {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+      .integration-pill {
+        font-size: 10px;
+      }
+      .flow-steps,
+      .capability-card {
+        padding: 14px;
+      }
+      .flow-step,
+      .capability-item {
+        font-size: 12px;
+      }
+      .btn-login {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px !important;
+      }
+    }
+    @media (max-width: 560px) {
+      main {
+        padding: 12px;
+      }
+      .hackathon-label {
+        width: 100%;
+        justify-content: center;
+      }
+      #login-screen {
+        gap: 10px;
+      }
+      .eyebrow {
+        margin-bottom: 8px;
+      }
+      .subtitle {
+        margin-bottom: 10px;
+      }
+      .integration-strip {
+        gap: 6px;
+      }
+      .integration-pill {
+        padding: 5px 8px;
+      }
+      .token-vault-note {
+        padding: 8px 10px;
+        font-size: 10px;
+      }
+      .step-num {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        font-size: 10px;
+      }
+      .side-menu { grid-template-columns: 1fr; }
+      .home-ai-widget {
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+        width: auto;
+      }
+      .home-ai-widget .ai-chat-log {
+        min-height: 180px;
+        max-height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="/branding/kodez_logo.svg" alt="Kodez CheckMate Agent logo" class="logo-mark" />
+    <div>
+      <div class="logo-text">Kodez CheckMate</div>
+      <div class="logo-sub">AI-Powered SecOps Orchestration for Auth0</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <a href="/blog.html" class="top-blog-link">Blog</a>
+    <a href="/learn-more.html" class="top-blog-link">Learn More</a>
+    <div class="hackathon-label">Authorized to Act: Auth0 for AI Agents</div>
+    <div class="badge"><span class="badge-dot"></span>TOKEN VAULT</div>
+    <div id="user-area"></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Login ── -->
+  <div id="login-screen" class="hidden">
+    <div class="landing-v2">
+      <section class="hero">
+        <div class="hero-left">
+          <div class="hero-eyebrow">
+            <span></span>
+            Security Vulnerability Management Platform
+          </div>
+
+          <h1>
+            <span class="accent">Kodez CheckMate</span><br>
+            <span class="dim">SecOps, orchestrated</span>
+          </h1>
+
+          <p class="hero-desc">
+            An AI-powered SecOps orchestration platform for <span class="nowrap">Auth0 CheckMate</span> security scans. Prompt the AI Agent to scan, analyse, ticket, document, and alert - all from one place, always with your approval.
+          </p>
+
+          <div class="hero-cta-row">
+            <a href="/login" class="btn-primary">Log in with Auth0</a>
+            <a href="#features" class="btn-ghost">See how it works</a>
+          </div>
+
+          <div class="connector-row">
+            <span class="connector-row-label">integrates with</span>
+            <div class="connector-chip"><div class="dot" style="background:#24292e;border:1px solid #555"></div>GitHub</div>
+            <div class="connector-chip"><div class="dot" style="background:#0052CC"></div>JIRA</div>
+            <div class="connector-chip"><div class="dot" style="background:#172B4D;border:1px solid #4299e1"></div>Confluence</div>
+            <div class="connector-chip"><div class="dot" style="background:#6264A7"></div>Teams</div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div class="traffic-dot" style="background:#ff5f57"></div>
+              <div class="traffic-dot" style="background:#ffbd2e;margin-left:6px"></div>
+              <div class="traffic-dot" style="background:#28c840;margin-left:6px"></div>
+              <span style="margin-left:12px">How it works</span>
+            </div>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                  <strong>Connect your tools</strong>
+                  <p>Log in and link GitHub, JIRA, Confluence, and Microsoft Teams. Tokens are stored securely in Auth0 Token Vault.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                  <strong>Trigger a security scan</strong>
+                  <p>Run Auth0 CheckMate via an AI prompt to scan your Auth0 tenant and identify vulnerabilities in real time.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                  <strong>Track and remediate</strong>
+                  <p>Compare scans in the dashboard. Let the AI Agent guide remediation and push findings to connected tools.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="secure-banner">
+        <div class="secure-inner">
+          <span style="color:#ff7f56;font-weight:700">Secure:</span>
+          All connector access tokens are stored and managed with
+          <strong style="color:#ff7f56">Auth0 Token Vault</strong>.
+          Credentials are never exposed in plaintext.
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="features-header">
+          <div class="section-eyebrow">Core Capabilities</div>
+          <h2 class="section-title">Everything you need to stay secure</h2>
+          <p class="section-sub">CheckMate gives your team end-to-end visibility into Auth0 vulnerabilities and the tools to act immediately.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m20 20-3.5-3.5"></path><path d="M11 8v6"></path><path d="M8 11h6"></path></svg></div><h3>Prompt-Driven Scanning</h3><p>Trigger Auth0 CheckMate security scans with a single natural language prompt. The agent identifies the action, confirms with you, then executes.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"></path><path d="M7 15V9"></path><path d="M12 15V5"></path><path d="M17 15v-3"></path></svg></div><h3>Vulnerability Dashboard</h3><p>Compare scans over time and track risk trends across environments.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v6"></path><path d="M9 6h6"></path><path d="M5 13a7 7 0 1 0 14 0"></path><path d="m14.5 12.5-3 3-1.5-1.5"></path></svg></div><h3>Remediation Guidance</h3><p>Ask the AI Agent about any finding and get actionable remediation recommendations.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="7" rx="1.5"></rect><rect x="14" y="5" width="7" height="7" rx="1.5"></rect><rect x="8.5" y="14" width="7" height="7" rx="1.5"></rect><path d="M10 8.5h4"></path><path d="M12 12v2"></path></svg></div><h3>Integrated Actions</h3><p>Push findings into JIRA, Confluence, and Teams without switching context.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 6 6v5c0 4 2.6 7.3 6 8 3.4-.7 6-4 6-8V6l-6-3Z"></path><path d="M10 12.5 11.5 14 14.5 10"></path></svg></div><h3>Token Vault Security</h3><p>All connector credentials are protected by Auth0 Token Vault by default.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17c2-2 4-3 6-3s4 1 6 3"></path><path d="M7 11a3 3 0 1 1 0-6"></path><path d="M17 13a3 3 0 1 0 0-6"></path><path d="M12 20v-4"></path><path d="M10 18h4"></path></svg></div><h3>Monitoring Workflow &amp; Scan Visualisation</h3><p>Run recurring scans and visualise results through charts and graphs to track open vulnerability trends and compare findings over time.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10"></path><path d="M7 12h6"></path><path d="M7 16h4"></path><path d="M17 7v10"></path><path d="m14.5 14.5 2.5 2.5 2.5-2.5"></path></svg></div><h3>Multi-Task Chaining</h3><p>Combine multiple actions into one prompt. The agent parses each task, seeks approval in sequence, and executes them end-to-end automatically.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 7v5c0 4.2 2.8 7.9 7 9 4.2-1.1 7-4.8 7-9V7l-7-4Z"></path><path d="M9.5 12h5"></path><path d="M12 9.5v5"></path></svg></div><h3>Human-in-the-Loop Approval</h3><p>Every agent action requires explicit user approval before execution. The agent always tells you what it's about to do - nothing runs without your sign-off.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 9h8"></path><path d="M8 13h5"></path><path d="M8 17h3"></path></svg></div><h3>Prompt Templates</h3><p>Pick from a set of pre-built prompt templates in the agent chat to kick off common tasks instantly - no typing required.</p></div>
+        </div>
+      </section>
+
+      <section class="connectors-section">
+        <div class="section-eyebrow">Integrations</div>
+        <h2 class="section-title">Connected to your workflow</h2>
+        <p class="section-sub">CheckMate plugs directly into the tools your team already uses so vulnerabilities flow into existing processes.</p>
+
+        <div class="connectors-grid">
+          <div class="connector-card">
+            <div class="connector-logo" style="background:rgba(36,41,46,.6);border:1px solid rgba(255,255,255,.1)">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#ffffff" d="M12 2.2a9.8 9.8 0 0 0-3.1 19.1c.5.1.7-.2.7-.5v-1.9c-3 .6-3.6-1.3-3.6-1.3-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.9.1-.6.4-1.1.7-1.3-2.4-.3-4.9-1.2-4.9-5.2 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.8 1 1.7 1 2.8 0 4-2.5 4.9-4.9 5.2.4.3.7 1 .7 2v3c0 .3.2.6.7.5A9.8 9.8 0 0 0 12 2.2Z"></path>
+              </svg>
+            </div>
+            <div class="connector-body">
+              <h3>GitHub</h3>
+              <p>Use repository context to align scan findings with source-owned workflows.</p>
+              <span class="connector-tag" style="background:rgba(36,41,46,.6);color:#9ca3af;border:1px solid rgba(255,255,255,.08)">Source Control</span>
+            </div>
+          </div>
+          <div class="connector-card">
+            <div class="connector-logo" style="background:rgba(0,82,204,.15);border:1px solid rgba(0,82,204,.3)">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path fill="#2684FF" d="M24.8 4H15.6c0 2.2 1.8 4 4 4h1.3v1.4c0 2.2 1.8 4 4 4V4Z"></path>
+                <path fill="#2684FF" d="M20.3 8.5H11.2c0 2.2 1.8 4 4 4h1.3v1.4c0 2.2 1.8 4 4 4v-9.4Z"></path>
+                <path fill="#0052CC" d="M15.8 13H6.6c0 2.2 1.8 4 4 4H12v1.4c0 2.2 1.8 4 4 4V13Z"></path>
+              </svg>
+            </div>
+            <div class="connector-body">
+              <h3>Atlassian JIRA</h3>
+              <p>Create remediation tickets with severity, context, and ownership details.</p>
+              <span class="connector-tag" style="background:rgba(0,82,204,.1);color:#60a5fa;border:1px solid rgba(0,82,204,.25)">Ticket Management</span>
+            </div>
+          </div>
+          <div class="connector-card">
+            <div class="connector-logo" style="background:rgba(23,43,77,.6);border:1px solid rgba(66,153,225,.2)">
+              <svg width="64" height="64" viewBox="0 0 63.78875 63.83" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="confluence-gradient-1" x1="59.68" y1="67.65" x2="20.35" y2="45.05" gradientUnits="userSpaceOnUse">
+                    <stop offset="0.18" stop-color="#0052cc"></stop>
+                    <stop offset="1" stop-color="#2684ff"></stop>
+                  </linearGradient>
+                  <linearGradient id="confluence-gradient-2" x1="279.76" y1="-1616.34" x2="240.42" y2="-1638.95" gradientTransform="translate(282.83 -1616.71) rotate(180)" href="#confluence-gradient-1"></linearGradient>
+                </defs>
+                <path d="M2.23,49.53c-.65,1.06-1.38,2.29-2,3.27a2,2,0,0,0,.67,2.72l13,8a2,2,0,0,0,2.77-.68c.52-.87,1.19-2,1.92-3.21,5.15-8.5,10.33-7.46,19.67-3l12.89,6.13a2,2,0,0,0,2.69-1l6.19-14a2,2,0,0,0-1-2.62c-2.72-1.28-8.13-3.83-13-6.18C28.51,30.45,13.62,31,2.23,49.53Z" fill="url(#confluence-gradient-1)"></path>
+                <path d="M60.52,17.76c.65-1.06,1.38-2.29,2-3.27a2,2,0,0,0-.67-2.72l-13-8A2,2,0,0,0,46,4.43c-.52.87-1.19,2-1.92,3.21-5.15,8.5-10.33,7.46-19.67,3L11.56,4.54a2,2,0,0,0-2.69,1l-6.19,14a2,2,0,0,0,1,2.62c2.72,1.28,8.13,3.83,13,6.18C34.24,36.84,49.13,36.27,60.52,17.76Z" fill="url(#confluence-gradient-2)"></path>
+              </svg>
+            </div>
+            <div class="connector-body">
+              <h3>Atlassian Confluence</h3>
+              <p>Document vulnerability findings for audit trails and cross-team collaboration.</p>
+              <span class="connector-tag" style="background:rgba(23,43,77,.5);color:#7dd3fc;border:1px solid rgba(66,153,225,.2)">Documentation</span>
+            </div>
+          </div>
+          <div class="connector-card">
+            <div class="connector-logo" style="background:rgba(98,100,167,.15);border:1px solid rgba(98,100,167,.3)">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="17.5" cy="8.2" r="2.5" fill="#7B83EB"></circle>
+                <circle cx="7" cy="10" r="4.2" fill="#6264A7"></circle>
+                <path fill="#4F52B2" d="M10.5 7h7.3a2.2 2.2 0 0 1 2.2 2.2v7.6a2.2 2.2 0 0 1-2.2 2.2h-7.3a2.2 2.2 0 0 1-2.2-2.2V9.2A2.2 2.2 0 0 1 10.5 7Z"></path>
+                <path fill="#ffffff" d="M11.6 10h5.8v1.8h-2v5.1h-1.9v-5.1h-1.9V10Z"></path>
+              </svg>
+            </div>
+            <div class="connector-body">
+              <h3>Microsoft Teams</h3>
+              <p>Publish alerts to channels for rapid visibility and response to critical findings.</p>
+              <span class="connector-tag" style="background:rgba(98,100,167,.1);color:#a78bfa;border:1px solid rgba(98,100,167,.25)">Notifications</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ai-section">
+        <div class="ai-card">
+          <div class="ai-card-left">
+            <h2 class="section-title">Your security co-pilot, always in control</h2>
+            <p class="section-sub" style="margin-bottom:18px">Powered by GPT-5.4 on Azure, the agent orchestrates your entire SecOps workflow via natural language. Every action is confirmed with you before it runs - nothing executes without your approval.</p>
+            <div class="prompt-example">
+              <div class="prompt-example-label">Example multi-task prompt</div>
+              <div class="prompt-example-quote">"Run security scan. Publish the executive summary into Confluence. Create JIRA tickets for issue tracking and update the stakeholders via Teams."</div>
+              <div class="prompt-example-note">-> Agent detects 4 actions, seeks approval for each, and executes them in sequence.</div>
+            </div>
+            <a href="/login" class="btn-primary" style="display:inline-flex">Try the AI Agent</a>
+          </div>
+          <div class="ai-card-right">
+            <div class="ai-action-item"><div>1</div><div><div class="ai-action-label">Scan &amp; Analyse</div><div class="ai-action-title">Run CheckMate scans on prompt</div><div class="ai-action-desc">Type "Run security scan" - the agent confirms, executes against your Auth0 tenant, and visualises the results in charts.</div></div></div>
+            <div class="ai-action-item"><div>2</div><div><div class="ai-action-label">JIRA</div><div class="ai-action-title">Create tickets for all findings</div><div class="ai-action-desc">The agent raises structured JIRA tickets for every open vulnerability - with your approval, automatically assigned and prioritised.</div></div></div>
+            <div class="ai-action-item"><div>3</div><div><div class="ai-action-label">Confluence</div><div class="ai-action-title">Publish executive summaries</div><div class="ai-action-desc">Post structured scan summaries directly to a Confluence page for audit trails and stakeholder visibility.</div></div></div>
+            <div class="ai-action-item"><div>4</div><div><div class="ai-action-label">Microsoft Teams</div><div class="ai-action-title">Alert your team instantly</div><div class="ai-action-desc">Publish vulnerability alerts to Teams channels so the right people are notified the moment new issues are found.</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="vault-section">
+        <div class="vault-card">
+          <div>
+            <div class="section-eyebrow">Auth0 Token Vault</div>
+            <h2 class="vault-title">Security-first, by design</h2>
+            <p class="vault-desc">Every connector credential is stored and managed through Auth0 Token Vault. Tokens are never exposed in plaintext and stay scoped to each integration.</p>
+            <div class="vault-features">
+              <div class="vault-feature">Encrypted at rest and in transit</div>
+              <div class="vault-feature">Connector-scoped token boundaries</div>
+              <div class="vault-feature">Zero plaintext credential exposure</div>
+              <div class="vault-feature">Auth0-managed token lifecycle</div>
+            </div>
+          </div>
+          <div class="vault-visual">
+            <div class="vault-lock">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M32 8 16 15v14c0 11 7.1 21.2 16 24 8.9-2.8 16-13 16-24V15L32 8Z" fill="rgba(255,255,255,.12)" stroke="#ff7f56" stroke-width="2.5"></path>
+                <rect x="24" y="28" width="16" height="13" rx="3" fill="#ff7f56"></rect>
+                <path d="M27 28v-3.2a5 5 0 0 1 10 0V28" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"></path>
+                <circle cx="32" cy="34.5" r="1.8" fill="#ffffff"></circle>
+                <path d="M32 36.3v2.9" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"></path>
+              </svg>
+            </div>
+            <div class="vault-label-chip">Token Vault</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="section-eyebrow" style="justify-content:center">Get Started</div>
+        <h2>Start securing your Auth0 tenant <span style="color:#ff7f56">today</span></h2>
+        <p>Connect your tools, run your first scan, and let the AI Agent guide safer Auth0 configuration in minutes.</p>
+        <div class="hero-cta-row" style="justify-content:center">
+          <a href="/login" class="btn-primary" style="font-size:15px;padding:16px 32px">Log in with Auth0</a>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer-brand">
+          <img src="/branding/kodez_logo.svg" alt="Kodez logo" class="footer-logo" />
+          <span style="font-size:13px;color:#9ca3af">Kodez CheckMate</span>
+        </div>
+        <p style="font-size:12px">Built with Auth0 Token Vault · Secure by default</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ── App ── -->
+  <div id="app-screen" class="hidden">
+    <div class="app-shell">
+      <aside class="side-menu">
+        <div class="menu-title">Workspace</div>
+        <a class="menu-link" href="/dashboard">Dashboard</a>
+        <button class="menu-link" data-section="activity">Activity</button>
+        <button class="menu-link" data-section="ai-agent">AI Agent</button>
+        <button class="menu-link requires-github hidden active" data-section="reports">Reports</button>
+        <button class="menu-link" data-section="action-studio">Action Studio</button>
+        <button class="menu-link" data-section="integrations">Integrations</button>
+        <div class="menu-group-label requires-github hidden">GitHub Integration</div>
+        <div class="menu-group requires-github hidden">
+          <button class="menu-link sub" data-section="workflows">Available Workflows</button>
+          <button class="menu-link sub" data-section="trigger">Trigger Workflow</button>
+          <button class="menu-link sub" data-section="runs">Recent Runs</button>
+        </div>
+        <div class="menu-group-label requires-jira hidden">JIRA Integration</div>
+        <div class="menu-group requires-jira hidden">
+          <button class="menu-link sub" data-section="jira-connect">JIRA Tickets</button>
+        </div>
+      </aside>
+
+      <div class="app-center">
+        <section class="app-pane" id="section-ai-agent">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">AI Agent</div>
+                <div class="card-meta">Ask Checkmate AI (Microsoft Foundry)</div>
+              </div>
+            </div>
+
+            <div class="ai-agent-wrap">
+              <div id="ai-chat-log" class="ai-chat-log">
+                <div class="ai-msg assistant">Hi, I am your Checkmate AI Agent. Ask me to create JIRA tickets, post to Microsoft Teams, create a Confluence page, or run Checkmate workflows.</div>
+              </div>
+              <textarea id="ai-input" class="ai-input" placeholder="Type your message..."></textarea>
+              <div class="ai-actions">
+                <button id="ai-send-btn" class="btn-ai-send" onclick="submitAIChat()">Send</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="app-pane active" id="section-reports">
+          <!-- Reports card -->
+          <div class="card" id="reports-card" style="display:none">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Reports</div>
+                <div class="card-meta" id="reports-meta">auth0-checkmate-runner · main/reports</div>
+              </div>
+              <button class="btn-refresh" onclick="loadReports()" title="Refresh">&#x21BB;</button>
+            </div>
+            <div id="reports-container"><div class="list-loading">Loading reports…</div></div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-integrations">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Connected Accounts Command Center</div>
+                <div class="card-meta">All Token Vault-backed destinations available to this user</div>
+              </div>
+              <button class="btn-refresh" onclick="loadIntegrations()" title="Refresh">↻</button>
+            </div>
+            <div id="integrations-container"><div class="list-loading">Loading connected accounts…</div></div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-workflows">
+          <!-- Available Workflows card -->
+          <div class="card" id="workflows-card" style="display:none">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Available Workflows</div>
+                <div class="card-meta" id="workflows-meta">Loading…</div>
+              </div>
+              <button class="btn-refresh" onclick="loadWorkflows()" title="Refresh">↻</button>
+            </div>
+            <div id="workflows-container"><div class="list-loading">Loading workflows…</div></div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-trigger">
+          <!-- Trigger card -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Trigger Workflow</div>
+                <div class="card-meta" id="workflow-meta">Loading…</div>
+              </div>
+            </div>
+
+            <!-- GitHub connection status banner -->
+            <div id="conn-banner" class="connection-banner disconnected">
+              <div class="conn-icon">⟳</div>
+              <div class="conn-body">
+                <div class="conn-title disconnected" id="conn-title">Checking GitHub connection…</div>
+                <div class="conn-desc" id="conn-desc"></div>
+              </div>
+              <a id="conn-btn" href="/connect/github/start" class="btn-connect hidden">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.012 2.895-.012 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                Connect GitHub
+              </a>
+            </div>
+
+            <div class="field-label">Branch / Tag</div>
+            <input type="text" id="branch-input" value="main" placeholder="main" style="width:100%" />
+
+            <button class="btn-trigger" id="trigger-btn" onclick="triggerWorkflow()" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Run Auth0 Checkmate
+            </button>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-runs">
+          <!-- Recent runs -->
+          <div class="card" id="runs-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Recent Runs</div>
+                <div class="card-meta">Last 5 workflow executions</div>
+              </div>
+              <button class="btn-refresh" onclick="loadRuns()" title="Refresh">↻</button>
+            </div>
+            <div id="runs-container"><div class="runs-empty">Connect GitHub to view runs.</div></div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-jira-connect">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Connect JIRA</div>
+                <div class="card-meta" id="jira-meta">Loading JIRA configuration…</div>
+              </div>
+            </div>
+
+            <div id="jira-banner" class="connection-banner disconnected">
+              <div class="conn-icon">⟳</div>
+              <div class="conn-body">
+                <div class="conn-title disconnected" id="jira-title">Checking JIRA connection…</div>
+                <div class="conn-desc" id="jira-desc"></div>
+              </div>
+              <a id="jira-connect-btn" href="/connect/jira/start" class="btn-connect">Connect JIRA</a>
+            </div>
+
+            <div class="jira-form">
+              <div class="field-label">JIRA Ticket Summary</div>
+              <input type="text" id="jira-summary" placeholder="Example: Fix vulnerable callback URL configuration" style="width:100%" />
+
+              <div class="field-label">JIRA Ticket Description</div>
+              <textarea id="jira-description" class="jira-textarea" placeholder="Provide context from scan findings..."></textarea>
+
+              <button class="btn-trigger" id="jira-create-btn" onclick="createJiraTicket()" disabled>Create JIRA Ticket</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-action-studio">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Multi-App Action Studio</div>
+                <div class="card-meta">Preview AI-orchestrated actions, approve them, and execute across apps with Token Vault</div>
+              </div>
+              <button class="btn-refresh" onclick="loadActionStudioData(true)" title="Refresh">↻</button>
+            </div>
+
+            <div class="split-grid">
+              <div class="subcard">
+                <div class="subcard-title">AI Orchestrator</div>
+                <div class="subcard-meta">Example: Create a JIRA summary ticket, post a Teams update, and publish a Confluence report.</div>
+
+                <div class="field-label">Selected Scan</div>
+                <select id="orchestrator-scan"></select>
+
+                <div class="field-label" style="margin-top:14px">Instruction</div>
+                <textarea id="orchestrator-prompt" class="jira-textarea" placeholder="Create a JIRA summary ticket, post a Teams incident summary, and publish a Confluence report for this scan."></textarea>
+
+                <div class="field-label" style="margin-top:14px">Operator Note</div>
+                <textarea id="orchestrator-note" class="jira-textarea" placeholder="Optional note to include in outbound actions."></textarea>
+
+                <div class="field-label" style="margin-top:14px">Confluence Space</div>
+                <select id="confluence-space-select"></select>
+
+                <div class="field-row" style="margin-top:14px">
+                  <div>
+                    <div class="field-label">Teams Team</div>
+                    <select id="teams-team-select" onchange="loadTeamChannels(this.value); renderTeamsCustomTarget()"></select>
+                  </div>
+                  <div>
+                    <div class="field-label">Teams Channel</div>
+                    <select id="teams-channel-select" onchange="renderTeamsCustomTarget()"></select>
+                  </div>
+                </div>
+
+                <div class="helper-actions">
+                  <button class="btn-secondary" type="button" onclick="loadConfluenceSpaces()">Load Confluence Spaces</button>
+                  <button class="btn-secondary" type="button" onclick="loadTeamsAndChannels()">Load Teams</button>
+                </div>
+
+                <button class="btn-trigger" id="preview-approval-btn" onclick="previewAutomationPlan()">Preview Action Plan</button>
+              </div>
+
+              <div class="subcard">
+                <div class="subcard-title">Approval Gate</div>
+                <div class="subcard-meta">Human-in-the-loop preview before any connected account action is executed.</div>
+                <div id="approval-preview" class="action-preview">
+                  <div class="list-loading">No approval plan yet. Generate one from the AI Orchestrator.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="subcard" style="margin-top:16px">
+              <div class="subcard-title">Create Confluence Page</div>
+              <div class="subcard-meta">Create a plain Confluence page through Token Vault without using Checkmate scan data.</div>
+              <div class="field-label">Confluence Space</div>
+              <select id="confluence-create-space-select"></select>
+              <div class="field-label" style="margin-top:14px">Page Title</div>
+              <input type="text" id="confluence-create-title" placeholder="Example: Security Analysis Notes" style="width:100%" />
+              <div class="field-label" style="margin-top:14px">Parent Page ID</div>
+              <input type="text" id="confluence-create-parent-id" placeholder="Optional parent page ID" style="width:100%" />
+              <div class="field-label" style="margin-top:14px">Page Content</div>
+              <textarea id="confluence-create-content" class="jira-textarea" placeholder="Write the content you want to publish to Confluence."></textarea>
+              <div class="helper-actions">
+                <button class="btn-secondary" type="button" onclick="loadConfluenceSpaces()">Load Confluence Spaces</button>
+                <button class="btn-secondary" type="button" onclick="createConfluencePage()">Create Confluence Page</button>
+              </div>
+              <div id="confluence-create-result" class="approval-note" style="margin-top:12px">No Confluence page created yet.</div>
+            </div>
+
+            <div class="subcard" style="margin-top:16px">
+              <div class="subcard-title">Quick Publish & Broadcast</div>
+              <div class="subcard-meta">Direct one-click report publishing and comms using the selected scan and destinations.</div>
+              <div class="quick-actions">
+                <button class="btn-secondary" type="button" onclick="publishConfluenceReport()">Publish Report to Confluence</button>
+                <button class="btn-secondary" type="button" onclick="broadcastTeamsUpdate()">Broadcast to Teams</button>
+              </div>
+            </div>
+
+            <div class="subcard" style="margin-top:16px">
+              <div class="subcard-title">Custom Teams Message</div>
+              <div class="subcard-meta">Uses the configured Teams defaults from `.env`, unless you choose a different team or channel above.</div>
+              <div class="approval-note" id="teams-custom-target" style="margin-bottom:12px"></div>
+              <div class="field-label">Message</div>
+              <textarea id="teams-custom-message" class="jira-textarea" placeholder="Security analysis completed. Please review the latest findings."></textarea>
+              <div class="helper-actions">
+                <button class="btn-secondary" type="button" onclick="sendTeamsCustomMessage()">Send Custom Teams Message</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="app-pane" id="section-activity">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Audit Timeline</div>
+                <div class="card-meta">Short-lived Token Vault exchanges, approvals, and cross-app actions performed in this session</div>
+              </div>
+              <button class="btn-refresh" onclick="loadActivityFeed()" title="Refresh">↻</button>
+            </div>
+            <div id="activity-container"><div class="list-loading">Loading activity…</div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="home-ai-widget" class="home-ai-widget" aria-live="polite">
+  <div class="home-ai-head">
+    <span>AI Agent</span>
+    <button id="ai-close-btn" class="home-ai-close" type="button">Minimize</button>
+  </div>
+  <div class="home-ai-body">
+    <div id="ai-chat-log" class="ai-chat-log">
+      <div class="ai-msg assistant">Hi, I am your Checkmate AI Agent. Ask me about workflow runs, security findings, JIRA tickets, or creating a Confluence analysis page.</div>
+    </div>
+    <div class="ai-suggest-row">
+      <button class="ai-suggest-btn" type="button" onclick="quickRunSecurityScanHome()">Run Auth0 CheckMate security scan</button>
+    </div>
+    <div id="home-ai-approval" class="ai-approval-box" aria-live="polite"></div>
+    <textarea id="ai-input" class="ai-input" placeholder="Type your message..."></textarea>
+    <div class="ai-actions">
+      <button id="ai-send-btn" class="btn-ai-send" onclick="submitAIChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let runsTimer = null;
+  let githubConnected = false;
+  let jiraConnected = false;
+  let jiraStatusInFlight = false;
+  let jiraStatusLastCheck = 0;
+  let navReady = false;
+  let aiBusy = false;
+  let integrationsLoaded = false;
+  let actionStudioLoaded = false;
+  let activityLoaded = false;
+  let scansCache = [];
+  let currentApprovalId = '';
+  let homePendingApproval = null;
+  const aiWidget = document.getElementById('home-ai-widget');
+  const aiCloseBtn = document.getElementById('ai-close-btn');
+  const NAV_SECTIONS = ['ai-agent', 'reports', 'integrations', 'workflows', 'trigger', 'runs', 'jira-connect', 'action-studio', 'activity'];
+
+  function getHomeAIInput() {
+    return aiWidget ? aiWidget.querySelector('#ai-input') : document.getElementById('ai-input');
+  }
+
+  function getHomeAISendBtn() {
+    return aiWidget ? aiWidget.querySelector('#ai-send-btn') : document.getElementById('ai-send-btn');
+  }
+
+  function getHomeAILog() {
+    return aiWidget ? aiWidget.querySelector('#ai-chat-log') : document.getElementById('ai-chat-log');
+  }
+
+  function openHomeAIWidget() {
+    if (!aiWidget) return;
+    aiWidget.classList.add('open');
+    getHomeAIInput()?.focus();
+  }
+
+  function closeHomeAIWidget() {
+    if (!aiWidget) return;
+    aiWidget.classList.remove('open');
+  }
+
+  function appendAIMessage(role, text) {
+    const log = getHomeAILog();
+    if (!log) return;
+    const msg = document.createElement('div');
+    msg.className = `ai-msg ${role}`;
+    msg.textContent = text;
+    log.appendChild(msg);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function renderHomeApprovalBox() {
+    const box = document.getElementById('home-ai-approval');
+    if (!box) return;
+    if (!homePendingApproval) {
+      box.classList.remove('open');
+      box.innerHTML = '';
+      return;
+    }
+
+    const plan = homePendingApproval.plan || {};
+    const steps = Array.isArray(plan.steps) ? plan.steps : [];
+    box.classList.add('open');
+    box.innerHTML = `
+      <div class="ai-approval-title">Approval Required</div>
+      <div style="font-size:13px;color:var(--text)">${plan.summary || 'Confirm execution of requested tasks.'}</div>
+      <div style="font-size:12px;color:var(--muted)">${steps.length ? steps.map((s, i) => `${i + 1}. ${s}`).join('<br/>') : ''}</div>
+      <div class="ai-approval-actions">
+        <button class="btn-secondary" type="button" onclick="cancelHomeApproval()">Cancel</button>
+        <button class="btn-ai-send" type="button" onclick="approveHomeAIExecution()">Approve & Execute</button>
+      </div>
+    `;
+  }
+
+  async function submitAIChat(overrideMessage, options = {}) {
+    if (aiBusy) return;
+    const input = getHomeAIInput();
+    const btn = getHomeAISendBtn();
+    const message = overrideMessage !== undefined ? String(overrideMessage).trim() : (input?.value || '').trim();
+    if (!message) return;
+
+    if (!options.skipUserEcho) {
+      appendAIMessage('user', message);
+      if (overrideMessage === undefined && input) input.value = '';
+    }
+    aiBusy = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Thinking...';
+    }
+
+    try {
+      const cfg = window._cfg || {};
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          scanId: document.getElementById('orchestrator-scan')?.value || '',
+          teamsTeamId: document.getElementById('teams-team-select')?.value || cfg.teamsDefaultTeamId || '',
+          teamsChannelId: document.getElementById('teams-channel-select')?.value || cfg.teamsDefaultChannelId || '',
+          confluenceSpaceId: document.getElementById('confluence-create-space-select')?.value ||
+            document.getElementById('confluence-space-select')?.value ||
+            cfg.confluenceSpaceId || '',
+          confluenceParentId: document.getElementById('confluence-create-parent-id')?.value || '',
+          approvalId: options.approvalId || '',
+          approve: options.approve === true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        appendAIMessage('error', data.error || 'Failed to get AI response.');
+      } else {
+        if (data.approvalRequired && data.approval) {
+          homePendingApproval = data.approval;
+          renderHomeApprovalBox();
+          const plan = data.approval.plan || {};
+          const steps = Array.isArray(plan.steps) ? plan.steps : [];
+          const details = steps.length ? `\n${steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : '';
+          appendAIMessage('assistant', `${data.reply || 'Approval required.'}${details}`);
+        } else {
+          homePendingApproval = null;
+          renderHomeApprovalBox();
+          appendAIMessage('assistant', data.reply || 'No response from AI model.');
+        }
+      }
+    } catch {
+      appendAIMessage('error', 'Network error while contacting AI service.');
+    } finally {
+      aiBusy = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Send';
+      }
+    }
+  }
+
+  function cancelHomeApproval() {
+    homePendingApproval = null;
+    renderHomeApprovalBox();
+  }
+
+  function approveHomeAIExecution() {
+    if (!homePendingApproval) return;
+    submitAIChat(homePendingApproval.message, {
+      approve: true,
+      approvalId: homePendingApproval.id,
+      skipUserEcho: true,
+    });
+  }
+
+  function quickRunSecurityScanHome() {
+    openHomeAIWidget();
+    const input = getHomeAIInput();
+    if (!input) return;
+    input.value = 'Run Auth0 CheckMate security scan';
+    input.focus();
+  }
+
+  function getSectionFromHash() {
+    const hash = (window.location.hash || '').replace('#', '').trim().toLowerCase();
+    return NAV_SECTIONS.includes(hash) ? hash : null;
+  }
+
+  function setActiveSection(sectionName, updateHash = true) {
+    if (!NAV_SECTIONS.includes(sectionName)) sectionName = 'trigger';
+    if (sectionName === 'ai-agent') {
+      openHomeAIWidget();
+      return;
+    }
+    document.querySelectorAll('.menu-link[data-section]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.section === sectionName);
+    });
+    document.querySelectorAll('.app-pane').forEach((pane) => pane.classList.remove('active'));
+    const activePane = document.getElementById(`section-${sectionName}`);
+    if (activePane) activePane.classList.add('active');
+    if (updateHash && window.location.hash !== `#${sectionName}`) {
+      history.replaceState(null, '', `#${sectionName}`);
+    }
+    if (sectionName === 'integrations') {
+      loadIntegrations();
+    }
+    if (sectionName === 'jira-connect') {
+      checkJiraConnection();
+    }
+    if (sectionName === 'action-studio') {
+      loadActionStudioData();
+    }
+    if (sectionName === 'activity') {
+      loadActivityFeed();
+    }
+  }
+
+  function setGithubDependentMenuVisibility(isConnected) {
+    if (isConnected) {
+      sessionStorage.setItem('github_known_connected', '1');
+    }
+    document.querySelectorAll('.requires-github').forEach((el) => {
+      el.classList.toggle('hidden', !isConnected);
+    });
+
+    const githubOnlySections = new Set(['reports', 'workflows', 'trigger', 'runs']);
+    const currentSection = getSectionFromHash();
+    if (!isConnected && currentSection && githubOnlySections.has(currentSection)) {
+      setActiveSection('integrations');
+    }
+  }
+
+  function setJiraDependentMenuVisibility(isConnected) {
+    document.querySelectorAll('.requires-jira').forEach((el) => {
+      el.classList.toggle('hidden', !isConnected);
+    });
+
+    const currentSection = getSectionFromHash();
+    if (!isConnected && currentSection === 'jira-connect') {
+      setActiveSection('integrations');
+    }
+  }
+
+  function initSidebarNavigation() {
+    if (navReady) return;
+    navReady = true;
+    const aiInputEl = getHomeAIInput();
+    if (aiCloseBtn) {
+      aiCloseBtn.addEventListener('click', closeHomeAIWidget);
+    }
+    if (aiInputEl) {
+      aiInputEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          submitAIChat();
+        }
+      });
+    }
+    document.querySelectorAll('.menu-link[data-section]').forEach((btn) => {
+      btn.addEventListener('click', () => setActiveSection(btn.dataset.section));
+    });
+    window.addEventListener('hashchange', () => {
+      const fromHash = getSectionFromHash();
+      if (fromHash) setActiveSection(fromHash, false);
+    });
+  }
+
+  function clearQueryPreserveHash() {
+    history.replaceState({}, '', `${location.pathname}${location.hash || ''}`);
+  }
+
+  window.submitAIChat = submitAIChat;
+  window.quickRunSecurityScanHome = quickRunSecurityScanHome;
+  window.approveHomeAIExecution = approveHomeAIExecution;
+  window.cancelHomeApproval = cancelHomeApproval;
+
+  async function boot() {
+    // Check for query-string indicators (redirect from connect flow)
+    const params = new URLSearchParams(location.search);
+    if (params.has('connected')) {
+      showToast('✔ GitHub connected to Token Vault', 'success');
+      sessionStorage.setItem('github_recently_connected_at', String(Date.now()));
+      clearQueryPreserveHash();
+    }
+    if (params.has('jira_connected')) {
+      showToast('✔ JIRA connected to Token Vault', 'success');
+      sessionStorage.setItem('jira_recently_connected_at', String(Date.now()));
+      clearQueryPreserveHash();
+    }
+    if (params.has('integration_connected')) {
+      const key = decodeURIComponent(params.get('integration_connected') || '').trim();
+      if (key) {
+        const labels = {
+          confluence: 'Confluence',
+          teams: 'Microsoft Teams',
+        };
+        showToast(`✔ ${(labels[key] || key)} connected to Token Vault`, 'success');
+      }
+      clearQueryPreserveHash();
+    }
+    if (params.has('error')) {
+      showToast('✘ ' + decodeURIComponent(params.get('error')), 'error');
+      clearQueryPreserveHash();
+    }
+
+    const [me, cfg] = await Promise.all([
+      fetch('/api/me').then(r => r.json()),
+      fetch('/api/config').then(r => r.json()),
+    ]);
+
+    if (!me.authenticated) {
+      document.body.classList.remove('app-mode');
+      document.getElementById('login-screen').classList.remove('hidden');
+      return;
+    }
+
+    showApp(me, cfg);
+    checkConnection();
+  }
+
+  function showApp(me, cfg) {
+    window._cfg = cfg; // store for use in renderRepos / renderWorkflows
+    document.body.classList.add('app-mode');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-screen').classList.remove('hidden');
+    initSidebarNavigation();
+    const initialSection = getSectionFromHash();
+    if (initialSection === 'ai-agent') {
+      setActiveSection('integrations', false);
+      openHomeAIWidget();
+    } else {
+      setActiveSection(initialSection || 'integrations', false);
+    }
+
+    const { user } = me;
+    document.getElementById('user-area').innerHTML = `
+      <div class="user-pill">
+        <img src="${user.picture}" alt="${user.name}" class="user-avatar"/>
+        <span class="user-name">${user.name}</span>
+        <a href="/logout" class="btn-text">Sign out</a>
+      </div>`;
+
+    document.getElementById('workflow-meta').textContent =
+      `${cfg.repo}  ·  ${cfg.workflow}`;
+
+    if (cfg.jiraProject) {
+      document.getElementById('jira-meta').textContent = `${cfg.jiraSite || ''} · Project ${cfg.jiraProject}`;
+    }
+
+    const confluenceSelect = document.getElementById('confluence-space-select');
+    confluenceSelect.innerHTML = `<option value="${cfg.confluenceSpaceId || ''}">${cfg.confluenceSpaceId ? `Configured space ${cfg.confluenceSpaceId}` : 'Select Confluence space'}</option>`;
+    const confluenceCreateSelect = document.getElementById('confluence-create-space-select');
+    if (confluenceCreateSelect) {
+      confluenceCreateSelect.innerHTML = `<option value="${cfg.confluenceSpaceId || ''}">${cfg.confluenceSpaceId ? `Configured space ${cfg.confluenceSpaceId}` : 'Select Confluence space'}</option>`;
+    }
+    document.getElementById('teams-team-select').innerHTML =
+      `<option value="${cfg.teamsDefaultTeamId || ''}">${cfg.teamsDefaultTeamId || 'Select Teams team'}</option>`;
+    document.getElementById('teams-channel-select').innerHTML =
+      `<option value="${cfg.teamsDefaultChannelId || ''}">${cfg.teamsDefaultChannelId || 'Select Teams channel'}</option>`;
+    renderTeamsCustomTarget();
+
+    const recentlyConnectedAt = Number(sessionStorage.getItem('github_recently_connected_at') || 0);
+    const recentlyConnected = recentlyConnectedAt > 0 && (Date.now() - recentlyConnectedAt) < 60_000;
+    const knownConnected = sessionStorage.getItem('github_known_connected') === '1';
+    if (recentlyConnected || knownConnected) {
+      setGithubDependentMenuVisibility(true);
+    }
+
+    checkJiraConnection();
+  }
+
+  async function checkConnection() {
+    setBanner('checking', '⟳', 'Checking GitHub connection…', '');
+    try {
+      const recentlyConnectedAt = Number(sessionStorage.getItem('github_recently_connected_at') || 0);
+      const recentlyConnected = recentlyConnectedAt > 0 && (Date.now() - recentlyConnectedAt) < 60_000;
+      const knownConnected = sessionStorage.getItem('github_known_connected') === '1';
+      const data = await fetch('/api/connection-status').then(r => r.json());
+      if (data.connected) {
+        githubConnected = true;
+        sessionStorage.removeItem('github_recently_connected_at');
+        sessionStorage.setItem('github_known_connected', '1');
+        setGithubDependentMenuVisibility(true);
+        setBanner('connected', '🔐',
+          'GitHub connected via Token Vault',
+          'Auth0 holds the credentials — this app requests a short-lived token per operation');
+        document.getElementById('conn-btn').classList.add('hidden');
+        // Load repos and workflows first, then enable trigger
+        await loadReposAndWorkflows();
+        document.getElementById('trigger-btn').disabled = false;
+        loadRuns();
+        runsTimer = setInterval(loadRuns, 15000);
+      } else {
+        githubConnected = false;
+        setGithubDependentMenuVisibility(recentlyConnected || knownConnected);
+        setBanner('disconnected', '⚠',
+          'GitHub not connected',
+          data.error || 'Click "Connect GitHub" to link your account via Token Vault');
+        document.getElementById('conn-btn').classList.remove('hidden');
+        document.getElementById('trigger-btn').disabled = true;
+        document.getElementById('reports-card').style.display = '';
+        document.getElementById('workflows-card').style.display = '';
+        document.getElementById('reports-container').innerHTML = '<div class="list-loading">Connect GitHub to load reports.</div>';
+        document.getElementById('workflows-container').innerHTML = '<div class="list-loading">Connect GitHub to load workflows.</div>';
+        document.getElementById('runs-container').innerHTML = '<div class="runs-empty">Connect GitHub to view runs.</div>';
+      }
+    } catch (err) {
+      const knownConnected = sessionStorage.getItem('github_known_connected') === '1';
+      setGithubDependentMenuVisibility(knownConnected);
+      setBanner('error', '✘', 'Could not check connection', err.message);
+    }
+  }
+
+  async function loadReposAndWorkflows() {
+    await Promise.all([loadReports(), loadWorkflows()]);
+  }
+
+  async function loadReports() {
+    document.getElementById('reports-card').style.display = '';
+    document.getElementById('reports-container').innerHTML = '<div class="list-loading">Downloading reports from auth0-checkmate-runner…</div>';
+    try {
+      const data = await fetch('/api/reports').then(r => r.json());
+      if (data.error) {
+        document.getElementById('reports-container').innerHTML =
+          `<div class="list-error">⚠ ${data.error}</div>`;
+        return;
+      }
+      renderReports(data.files || [], data.repo, data.branch);
+    } catch (err) {
+      document.getElementById('reports-container').innerHTML =
+        `<div class="list-error">⚠ Network error: ${err.message}</div>`;
+    }
+  }
+
+  function renderReports(files, repo, branch) {
+    const c = document.getElementById('reports-container');
+    const meta = document.getElementById('reports-meta');
+    if (repo && branch) {
+      meta.textContent = `${repo} · ${branch}/reports · ${files.length} file${files.length !== 1 ? 's' : ''}`;
+    }
+    if (!files.length) {
+      c.innerHTML = '<div class="list-loading">No report files found in the reports folder.</div>';
+      return;
+    }
+    c.innerHTML = `<div class="report-list">${files.map(f => {
+      const sizeLabel = f.size > 1024
+        ? `${(f.size / 1024).toFixed(1)} KB`
+        : `${f.size} B`;
+      const dateLabel = new Date(f.downloadedAt).toLocaleString();
+      return `
+        <a class="report-file" href="${f.localUrl}" target="_blank" rel="noopener">
+          <span class="report-icon">📄</span>
+          <div style="flex:1;min-width:0">
+            <div class="report-name">${f.name}</div>
+            <div class="report-meta">${sizeLabel} · downloaded ${dateLabel}</div>
+          </div>
+          <span class="report-badge">REPORT</span>
+        </a>`;
+    }).join('')}</div>`;
+  }
+
+  async function loadWorkflows() {
+    document.getElementById('workflows-card').style.display = '';
+    document.getElementById('workflows-container').innerHTML = '<div class="list-loading">Loading workflows…</div>';
+    try {
+      const data = await fetch('/api/workflows').then(r => r.json());
+      if (data.error) {
+        document.getElementById('workflows-container').innerHTML =
+          `<div class="list-error">⚠ ${data.error}</div>`;
+        return;
+      }
+      renderWorkflows(data.workflows || []);
+    } catch (err) {
+      document.getElementById('workflows-container').innerHTML =
+        `<div class="list-error">⚠ Network error: ${err.message}</div>`;
+    }
+  }
+
+  function renderWorkflows(workflows) {
+    const c = document.getElementById('workflows-container');
+    const targetWf = (window._cfg && window._cfg.workflow) || '';
+    const repo     = (window._cfg && window._cfg.repo)     || '';
+    document.getElementById('workflows-meta').textContent =
+      `${workflows.length} workflow${workflows.length !== 1 ? 's' : ''} in ${repo}`;
+    if (!workflows.length) {
+      c.innerHTML = '<div class="list-loading">No workflows found in this repository.</div>';
+      return;
+    }
+    c.innerHTML = `<div class="workflow-list">${workflows.map(w => {
+      const fileName = w.path.split('/').pop();
+      const isTarget = fileName === targetWf || w.path === `.github/workflows/${targetWf}`;
+      return `
+        <a class="workflow-item${isTarget ? ' target-wf' : ''}" href="${w.url}" target="_blank" rel="noopener">
+          <span class="wf-indicator ${w.state === 'active' ? 'active' : 'disabled'}"></span>
+          <div style="flex:1;min-width:0">
+            <div class="wf-name">${w.name}</div>
+            <div class="wf-path">${w.path}</div>
+          </div>
+          ${isTarget ? `<span class="wf-tag target">▶ WILL RUN</span>` : ''}
+        </a>`;
+    }).join('')}</div>`;
+  }
+
+  async function ensureScansLoaded(force = false) {
+    if (!force && scansCache.length) return scansCache;
+    const data = await fetch('/api/scans').then((r) => r.json());
+    scansCache = data.scans || [];
+    return scansCache;
+  }
+
+  function renderScanOptions(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    if (!scansCache.length) {
+      select.innerHTML = '<option value="">No scans available</option>';
+      return;
+    }
+    select.innerHTML = scansCache.map((scan) => {
+      const dateLabel = new Date(scan.scanned_at).toLocaleDateString();
+      const label = `${scan.file_name} · ${dateLabel} · ${scan.cnt_total} findings`;
+      return `<option value="${scan.id}">${label}</option>`;
+    }).join('');
+  }
+
+  async function loadIntegrations(force = false) {
+    if (integrationsLoaded && !force) return;
+    const container = document.getElementById('integrations-container');
+    if (!container) return;
+    container.innerHTML = '<div class="list-loading">Loading connected accounts…</div>';
+    try {
+      const res = await fetch('/api/integrations/statuses');
+      const data = await res.json();
+      renderIntegrations(data.integrations || [], data.error, !!data.rateLimited);
+      integrationsLoaded = true;
+    } catch (err) {
+      container.innerHTML = `<div class="list-error">⚠ ${err.message}</div>`;
+    }
+  }
+
+  function renderIntegrations(integrations, error = '', rateLimited = false) {
+    const githubConnection = (window._cfg && window._cfg.connection) || '';
+    const githubIntegration = integrations.find((integration) =>
+      integration.connection === githubConnection ||
+      integration.key === 'github' ||
+      String(integration.label || '').toLowerCase().includes('github')
+    );
+    if (githubIntegration) {
+      githubConnected = !!githubIntegration.connected;
+      if (githubConnected) {
+        sessionStorage.setItem('github_known_connected', '1');
+      } else if (!rateLimited) {
+        sessionStorage.removeItem('github_known_connected');
+      }
+      setGithubDependentMenuVisibility(githubConnected || (rateLimited && sessionStorage.getItem('github_known_connected') === '1'));
+    }
+
+    const container = document.getElementById('integrations-container');
+    if (!integrations.length) {
+      container.innerHTML = `<div class="list-error">⚠ ${error || 'No integrations configured.'}</div>`;
+      return;
+    }
+    const header = error
+      ? `<div class="list-error" style="margin-bottom:14px">${rateLimited ? '⚠' : '✘'} ${error}</div>`
+      : '';
+    container.innerHTML = `${header}<div class="integration-grid">${integrations.map((integration) => `
+      <div class="integration-card">
+        <div class="integration-top">
+          <div>
+            <div class="integration-name">${integration.label}</div>
+            <div class="integration-desc">${integration.description || ''}</div>
+          </div>
+          <span class="status-pill ${integration.connected ? 'connected' : (rateLimited ? 'warning' : 'disconnected')}">
+            ${integration.connected ? 'Connected' : (rateLimited ? 'Limited' : 'Not Connected')}
+          </span>
+        </div>
+        <div class="integration-meta">
+          Connection: ${integration.connection || 'Not set'}<br/>
+          Category: ${integration.category || 'general'}
+        </div>
+        <div class="integration-actions">
+          ${integration.connected
+            ? '<span class="btn-secondary" style="cursor:default;opacity:.7">Ready</span>'
+            : `<a class="btn-secondary" href="${integration.connectPath}">Connect ${integration.label}</a>`}
+        </div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function renderTeamsCustomTarget() {
+    const cfg = window._cfg || {};
+    const teamId = document.getElementById('teams-team-select')?.value || cfg.teamsDefaultTeamId || '';
+    const channelId = document.getElementById('teams-channel-select')?.value || cfg.teamsDefaultChannelId || '';
+    const target = document.getElementById('teams-custom-target');
+    if (!target) return;
+
+    if (!teamId || !channelId) {
+      target.textContent = 'No default Teams target configured yet. Set TEAMS_DEFAULT_TEAM_ID and TEAMS_DEFAULT_CHANNEL_ID, or load Teams and choose a target above.';
+      return;
+    }
+
+    target.textContent = `Current Teams target: team ${teamId} · channel ${channelId}`;
+  }
+
+  async function loadActionStudioData(force = false) {
+    if (actionStudioLoaded && !force) return;
+    try {
+      await ensureScansLoaded(force);
+      renderScanOptions('orchestrator-scan');
+      await Promise.allSettled([
+        loadConfluenceSpaces(),
+        loadTeamsAndChannels(),
+      ]);
+      actionStudioLoaded = true;
+    } catch (err) {
+      showToast(`✘ ${err.message}`, 'error');
+    }
+  }
+
+  async function loadConfluenceSpaces() {
+    const selects = ['confluence-space-select', 'confluence-create-space-select']
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!selects.length) return;
+    selects.forEach((select) => {
+      select.innerHTML = '<option value="">Loading Confluence spaces...</option>';
+    });
+    try {
+      const data = await fetch('/api/confluence/spaces').then((r) => r.json());
+      if (data.error) throw new Error(data.error);
+      const cfg = window._cfg || {};
+      const options = data.spaces || [];
+      const markup = [`<option value="">${cfg.confluenceSpaceId || 'Select Confluence space'}</option>`]
+        .concat(options.map((space) => `<option value="${space.id}">${space.name} (${space.key || space.id})</option>`))
+        .join('');
+      selects.forEach((select) => {
+        select.innerHTML = markup;
+        if (cfg.confluenceSpaceId) select.value = cfg.confluenceSpaceId;
+      });
+    } catch (err) {
+      selects.forEach((select) => {
+        select.innerHTML = `<option value="">${err.message}</option>`;
+      });
+    }
+  }
+
+  async function loadTeamsAndChannels() {
+    const teamSelect = document.getElementById('teams-team-select');
+    if (!teamSelect) return;
+    teamSelect.innerHTML = '<option value="">Loading Teams...</option>';
+    try {
+      const data = await fetch('/api/teams/teams').then((r) => r.json());
+      if (data.error) throw new Error(data.error);
+      const cfg = window._cfg || {};
+      const options = data.teams || [];
+      teamSelect.innerHTML = [`<option value="">${cfg.teamsDefaultTeamId || 'Select Teams team'}</option>`]
+        .concat(options.map((team) => `<option value="${team.id}">${team.displayName}</option>`))
+        .join('');
+      if (cfg.teamsDefaultTeamId) teamSelect.value = cfg.teamsDefaultTeamId;
+      await loadTeamChannels(teamSelect.value);
+      renderTeamsCustomTarget();
+    } catch (err) {
+      teamSelect.innerHTML = `<option value="">${err.message}</option>`;
+      renderTeamsCustomTarget();
+    }
+  }
+
+  async function loadTeamChannels(teamId) {
+    const channelSelect = document.getElementById('teams-channel-select');
+    if (!channelSelect) return;
+    if (!teamId) {
+      channelSelect.innerHTML = '<option value="">Select Teams channel</option>';
+      renderTeamsCustomTarget();
+      return;
+    }
+    channelSelect.innerHTML = '<option value="">Loading channels...</option>';
+    try {
+      const data = await fetch(`/api/teams/teams/${encodeURIComponent(teamId)}/channels`).then((r) => r.json());
+      if (data.error) throw new Error(data.error);
+      const cfg = window._cfg || {};
+      const options = data.channels || [];
+      channelSelect.innerHTML = [`<option value="">${cfg.teamsDefaultChannelId || 'Select Teams channel'}</option>`]
+        .concat(options.map((channel) => `<option value="${channel.id}">${channel.displayName}</option>`))
+        .join('');
+      if (cfg.teamsDefaultChannelId) channelSelect.value = cfg.teamsDefaultChannelId;
+      renderTeamsCustomTarget();
+    } catch (err) {
+      channelSelect.innerHTML = `<option value="">${err.message}</option>`;
+      renderTeamsCustomTarget();
+    }
+  }
+
+  function getStudioPayload() {
+    const cfg = window._cfg || {};
+    return {
+      scanId: document.getElementById('orchestrator-scan').value,
+      note: document.getElementById('orchestrator-note').value.trim(),
+      teamsTeamId: document.getElementById('teams-team-select').value || cfg.teamsDefaultTeamId || '',
+      teamsChannelId: document.getElementById('teams-channel-select').value || cfg.teamsDefaultChannelId || '',
+      confluenceSpaceId: document.getElementById('confluence-space-select').value || cfg.confluenceSpaceId || '',
+    };
+  }
+
+  async function previewAutomationPlan() {
+    const btn = document.getElementById('preview-approval-btn');
+    btn.disabled = true;
+    btn.textContent = 'Generating Plan...';
+    try {
+      const payload = {
+        ...getStudioPayload(),
+        prompt: document.getElementById('orchestrator-prompt').value.trim(),
+      };
+      const res = await fetch('/api/automation/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate approval plan.');
+      currentApprovalId = data.approval.id;
+      renderApprovalPreview(data.approval);
+      loadActivityFeed(true);
+      showToast('✔ Approval plan created', 'success');
+    } catch (err) {
+      document.getElementById('approval-preview').innerHTML = `<div class="list-error">⚠ ${err.message}</div>`;
+      showToast(`✘ ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Preview Action Plan';
+    }
+  }
+
+  function renderApprovalPreview(approval) {
+    const container = document.getElementById('approval-preview');
+    const rows = (approval.actions || []).map((action) => `
+      <div class="approval-row">
+        <div class="approval-head">
+          <div class="approval-title">${action.label}</div>
+          <span class="status-pill ${action.ready ? 'connected' : 'disconnected'}">${action.ready ? 'Ready' : 'Needs Input'}</span>
+        </div>
+        <div class="approval-note">Integration: ${action.integration} · ${action.readinessNote}</div>
+      </div>
+    `).join('');
+    const results = (approval.results || []).map((result) => `
+      <div class="approval-row">
+        <div class="approval-head">
+          <div class="approval-title">${result.type}</div>
+          <span class="status-pill connected">Done</span>
+        </div>
+        <div class="approval-note">${JSON.stringify(result.result)}</div>
+      </div>
+    `).join('');
+    const errors = (approval.errors || []).map((result) => `
+      <div class="approval-row">
+        <div class="approval-head">
+          <div class="approval-title">${result.type}</div>
+          <span class="status-pill disconnected">Error</span>
+        </div>
+        <div class="approval-note">${result.error}</div>
+      </div>
+    `).join('');
+    const canExecute = approval.status === 'pending';
+    container.innerHTML = `
+      <div class="approval-row">
+        <div class="approval-head">
+          <div class="approval-title">Approval ${approval.id.slice(0, 8)}</div>
+          <span class="status-pill warning">${approval.status}</span>
+        </div>
+        <div class="approval-note">Scan: ${approval.scanLabel}</div>
+        <div class="approval-note">${approval.prompt || 'Direct destination-driven action bundle.'}</div>
+      </div>
+      ${rows}
+      ${results}
+      ${errors}
+      ${canExecute ? '<button class="btn-trigger" id="execute-approval-btn" onclick="executeApprovalPlan()">Approve & Execute</button>' : ''}
+    `;
+  }
+
+  async function executeApprovalPlan() {
+    if (!currentApprovalId) return;
+    const btn = document.getElementById('execute-approval-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Executing...';
+    }
+    try {
+      const res = await fetch(`/api/automation/approvals/${encodeURIComponent(currentApprovalId)}/execute`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to execute approval.');
+      renderApprovalPreview(data.approval);
+      loadActivityFeed(true);
+      showToast('✔ Approval executed', 'success');
+    } catch (err) {
+      showToast(`✘ ${err.message}`, 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Approve & Execute';
+      }
+    }
+  }
+
+  async function loadActivityFeed(force = false) {
+    if (activityLoaded && !force) return;
+    const container = document.getElementById('activity-container');
+    if (!container) return;
+    container.innerHTML = '<div class="list-loading">Loading activity…</div>';
+    try {
+      const data = await fetch('/api/activity').then((r) => r.json());
+      const items = data.activity || [];
+      if (!items.length) {
+        container.innerHTML = '<div class="list-loading">No activity yet. Connected-account actions will appear here.</div>';
+        return;
+      }
+      container.innerHTML = `<div class="activity-list">${items.map((item) => `
+        <div class="activity-item">
+          <div class="activity-top">
+            <div class="activity-type">${item.type}${item.integration ? ` · ${item.integration}` : ''}</div>
+            <span class="status-pill ${item.status === 'success' ? 'connected' : item.status === 'error' ? 'disconnected' : 'warning'}">${item.status}</span>
+          </div>
+          <div class="activity-msg">${item.message}</div>
+          <div class="activity-detail">${item.detail || ''}</div>
+          <div class="activity-detail" style="margin-top:6px">${new Date(item.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('')}</div>`;
+      activityLoaded = true;
+    } catch (err) {
+      container.innerHTML = `<div class="list-error">⚠ ${err.message}</div>`;
+    }
+  }
+
+  async function requestConfluencePageCreate(payload) {
+    const createPath = window._cfg?.confluenceCreatePagePath;
+    if (!createPath) {
+      throw new Error('Confluence page creation path is not configured.');
+    }
+    const res = await fetch(createPath, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to create Confluence page.');
+    return data;
+  }
+
+  async function createConfluencePage() {
+    const cfg = window._cfg || {};
+    const spaceId = document.getElementById('confluence-create-space-select')?.value || cfg.confluenceSpaceId || '';
+    const title = document.getElementById('confluence-create-title')?.value.trim() || '';
+    const parentId = document.getElementById('confluence-create-parent-id')?.value.trim() || '';
+    const content = document.getElementById('confluence-create-content')?.value || '';
+    const result = document.getElementById('confluence-create-result');
+
+    if (!title) {
+      showToast('✘ Confluence page title is required.', 'error');
+      return;
+    }
+
+    if (result) {
+      result.textContent = 'Creating Confluence page…';
+    }
+
+    try {
+      const data = await requestConfluencePageCreate({ spaceId, title, parentId, content });
+      if (result) {
+        result.innerHTML = `Created page <a href="${data.url}" target="_blank" rel="noopener">${data.title}</a>`;
+      }
+      showToast('✔ Confluence page created', 'success');
+      if (data.url) window.open(data.url, '_blank', 'noopener');
+      loadActivityFeed(true);
+    } catch (err) {
+      if (result) {
+        result.textContent = err.message;
+      }
+      showToast(`✘ ${err.message}`, 'error');
+    }
+  }
+
+  async function publishConfluenceReport() {
+    try {
+      const payload = getStudioPayload();
+      const res = await fetch('/api/confluence/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scanId: payload.scanId,
+          spaceId: payload.confluenceSpaceId,
+          note: payload.note,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to publish to Confluence.');
+      showToast('✔ Published to Confluence', 'success');
+      if (data.url) window.open(data.url, '_blank', 'noopener');
+      loadActivityFeed(true);
+    } catch (err) {
+      showToast(`✘ ${err.message}`, 'error');
+    }
+  }
+
+  async function broadcastTeamsUpdate() {
+    try {
+      const payload = getStudioPayload();
+      const res = await fetch('/api/teams/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scanId: payload.scanId,
+          teamId: payload.teamsTeamId,
+          channelId: payload.teamsChannelId,
+          note: payload.note,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to broadcast to Teams.');
+      showToast('✔ Broadcast sent to Teams', 'success');
+      loadActivityFeed(true);
+    } catch (err) {
+      showToast(`✘ ${err.message}`, 'error');
+    }
+  }
+
+  async function sendTeamsCustomMessage() {
+    const message = document.getElementById('teams-custom-message')?.value.trim() || '';
+    if (!message) {
+      showToast('✘ Enter a Teams message first.', 'error');
+      return;
+    }
+
+    try {
+      const payload = getStudioPayload();
+      const res = await fetch('/api/teams/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamId: payload.teamsTeamId,
+          channelId: payload.teamsChannelId,
+          message,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send custom Teams message.');
+      showToast('✔ Custom Teams message sent', 'success');
+      document.getElementById('teams-custom-message').value = '';
+      loadActivityFeed(true);
+    } catch (err) {
+      showToast(`✘ ${err.message}`, 'error');
+    }
+  }
+
+  function setBanner(type, icon, title, desc) {
+    const banner = document.getElementById('conn-banner');
+    const t = document.getElementById('conn-title');
+    const d = document.getElementById('conn-desc');
+    banner.className = `connection-banner ${type === 'checking' ? 'disconnected' : type}`;
+    banner.querySelector('.conn-icon').textContent = icon;
+    t.className = `conn-title ${type === 'checking' ? '' : type}`;
+    t.textContent = title;
+    d.textContent = desc;
+  }
+
+  async function triggerWorkflow() {
+    if (!githubConnected) return;
+    const btn = document.getElementById('trigger-btn');
+    const ref = document.getElementById('branch-input').value.trim() || 'main';
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Exchanging token & dispatching…`;
+    try {
+      const res = await fetch('/api/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('✔ Workflow dispatched via Token Vault', 'success');
+        setTimeout(loadRuns, 2000);
+      } else {
+        showToast('✘ ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch {
+      showToast('✘ Network error', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Run Auth0 Checkmate`;
+    }
+  }
+
+  async function loadRuns() {
+    try {
+      const data = await fetch('/api/runs').then(r => r.json());
+      if (data.error) return;
+      renderRuns(data.runs || []);
+    } catch { /* silent */ }
+  }
+
+  function setJiraBanner(type, icon, title, desc) {
+    const banner = document.getElementById('jira-banner');
+    const t = document.getElementById('jira-title');
+    const d = document.getElementById('jira-desc');
+    banner.className = `connection-banner ${type === 'checking' ? 'disconnected' : type}`;
+    banner.querySelector('.conn-icon').textContent = icon;
+    t.className = `conn-title ${type === 'checking' ? '' : type}`;
+    t.textContent = title;
+    d.textContent = desc;
+  }
+
+  async function checkJiraConnection() {
+    const now = Date.now();
+    if (jiraStatusInFlight) return;
+    if (now - jiraStatusLastCheck < 12000) return;
+
+    jiraStatusInFlight = true;
+    jiraStatusLastCheck = now;
+    setJiraBanner('checking', '⟳', 'Checking JIRA connection…', '');
+    document.getElementById('jira-connect-btn').classList.remove('hidden');
+    document.getElementById('jira-create-btn').disabled = true;
+    try {
+      const res = await fetch('/api/jira/status');
+      const data = await res.json();
+      const limited = res.status === 429 || data.rateLimited ||
+        (typeof data.error === 'string' && (data.error.includes('429') || data.error.includes('Too Many Requests')));
+
+      if (data.connected) {
+        jiraConnected = true;
+        setJiraDependentMenuVisibility(true);
+        setJiraBanner(
+          'connected',
+          '🔐',
+          'JIRA connected via Token Vault',
+          `Auth0 will mint a short-lived Atlassian token when creating tickets in ${data.project || 'the configured project'}`
+        );
+        document.getElementById('jira-connect-btn').classList.add('hidden');
+        document.getElementById('jira-create-btn').disabled = false;
+        sessionStorage.removeItem('jira_recently_connected_at');
+      } else if (limited) {
+        const recentlyConnectedAt = Number(sessionStorage.getItem('jira_recently_connected_at') || 0);
+        const recentlyConnected = recentlyConnectedAt > 0 && (Date.now() - recentlyConnectedAt) < 60_000;
+        if (recentlyConnected) {
+          jiraConnected = true;
+        }
+        setJiraDependentMenuVisibility(jiraConnected);
+        setJiraBanner(
+          recentlyConnected ? 'connected' : 'disconnected',
+          recentlyConnected ? '⟳' : '⚠',
+          recentlyConnected ? 'JIRA connection pending verification' : 'JIRA status temporarily rate-limited',
+          recentlyConnected
+            ? 'The connect flow completed, but Auth0 is rate limiting verification. Try creating a ticket again in a few seconds.'
+            : 'Auth0 is rate limiting JIRA connection checks right now. You can still click Connect JIRA to start the OAuth flow, or wait a few seconds and retry.'
+        );
+        document.getElementById('jira-connect-btn').classList.toggle('hidden', jiraConnected);
+        document.getElementById('jira-create-btn').disabled = !jiraConnected;
+      } else {
+        jiraConnected = false;
+        setJiraDependentMenuVisibility(false);
+        setJiraBanner(
+          'disconnected',
+          '⚠',
+          'JIRA not connected',
+          data.error || 'Connect JIRA through Auth0 Token Vault to create issues in the configured project.'
+        );
+        document.getElementById('jira-connect-btn').classList.remove('hidden');
+        document.getElementById('jira-create-btn').disabled = true;
+      }
+    } catch (err) {
+      jiraConnected = false;
+      setJiraDependentMenuVisibility(false);
+      document.getElementById('jira-connect-btn').classList.remove('hidden');
+      document.getElementById('jira-create-btn').disabled = true;
+      setJiraBanner('error', '✘', 'Could not check JIRA connection', `${err.message} You can still click Connect JIRA to try the connect flow directly.`);
+    } finally {
+      jiraStatusInFlight = false;
+    }
+  }
+
+  async function createJiraTicket() {
+    if (!jiraConnected) return;
+    const summaryEl = document.getElementById('jira-summary');
+    const descEl = document.getElementById('jira-description');
+    const btn = document.getElementById('jira-create-btn');
+    const summary = summaryEl.value.trim();
+    const description = descEl.value.trim();
+    if (!summary) {
+      showToast('✘ Ticket summary is required', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Creating JIRA Ticket...';
+    try {
+      const res = await fetch('/api/jira/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ summary, description }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        showToast(`✘ ${data.error || 'Failed to create JIRA ticket'}`, 'error');
+      } else {
+        showToast(`✔ JIRA ticket ${data.issueKey || ''} created`, 'success');
+        if (data.issueUrl) {
+          window.open(data.issueUrl, '_blank', 'noopener');
+        }
+      }
+    } catch {
+      showToast('✘ Network error while creating JIRA ticket', 'error');
+    } finally {
+      btn.disabled = !jiraConnected;
+      btn.textContent = 'Create JIRA Ticket';
+    }
+  }
+
+  window.createJiraTicket = createJiraTicket;
+  window.loadIntegrations = loadIntegrations;
+  window.loadActionStudioData = loadActionStudioData;
+  window.loadActivityFeed = loadActivityFeed;
+  window.loadConfluenceSpaces = loadConfluenceSpaces;
+  window.createConfluencePage = createConfluencePage;
+  window.loadTeamsAndChannels = loadTeamsAndChannels;
+  window.loadTeamChannels = loadTeamChannels;
+  window.renderTeamsCustomTarget = renderTeamsCustomTarget;
+  window.previewAutomationPlan = previewAutomationPlan;
+  window.executeApprovalPlan = executeApprovalPlan;
+  window.publishConfluenceReport = publishConfluenceReport;
+  window.broadcastTeamsUpdate = broadcastTeamsUpdate;
+  window.sendTeamsCustomMessage = sendTeamsCustomMessage;
+
+  function renderRuns(runs) {
+    const c = document.getElementById('runs-container');
+    if (!runs.length) {
+      c.innerHTML = '<div class="runs-empty">No runs yet for this workflow.</div>';
+      return;
+    }
+    c.innerHTML = runs.map(r => {
+      const key   = r.conclusion || r.status || 'queued';
+      const label = key.replace('_', ' ');
+      const date  = new Date(r.createdAt).toLocaleString();
+      return `
+        <a class="run-item" href="${r.url}" target="_blank" rel="noopener">
+          <span class="run-dot ${key}"></span>
+          <span class="run-id">#${r.id}</span>
+          <span class="run-status ${key}">${label}</span>
+          <span class="run-date">${date}</span>
+        </a>`;
+    }).join('');
+  }
+
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `show ${type}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 4000);
+  }
+
+  boot();
+</script>
+<script src="/wf-toast.js"></script>
+</body>
+</html>
