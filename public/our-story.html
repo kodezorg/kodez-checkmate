@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Story — Kodez CheckMate</title>
+  <link rel="icon" type="image/svg+xml" href="/branding/kodez_logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090b0f;
+      --bg-soft: #111621;
+      --surface: #141b28;
+      --surface-2: #192232;
+      --border: rgba(255, 255, 255, 0.09);
+      --text: #e8edf8;
+      --muted: #a7b0c2;
+      --accent: #ff7f56;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Plus Jakarta Sans', sans-serif;
+      --ui: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--ui);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% -10%, rgba(255, 127, 86, 0.22) 0%, rgba(255, 127, 86, 0) 40%),
+        radial-gradient(circle at 100% 10%, rgba(58, 130, 246, 0.14) 0%, rgba(58, 130, 246, 0) 38%),
+        var(--bg);
+      line-height: 1.7;
+    }
+
+    .page-wrap {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(10, 11, 13, .85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+    .logo-text { font-family: var(--sans); font-size: 14px; font-weight: 700; color: #e8eaf0; letter-spacing: .01em; }
+    .logo-sub { font-family: var(--ui); font-size: 10px; color: #6b7280; letter-spacing: .03em; text-transform: uppercase; }
+    .hackathon-label {
+      padding: 5px 12px;
+      background: rgba(255, 127, 86, .08);
+      border: 1px solid rgba(255, 127, 86, .3);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #ff7f56;
+      font-family: var(--mono);
+      letter-spacing: .03em;
+    }
+    .badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7f56; box-shadow: 0 0 6px #ff7f56; animation: blink 2s infinite; }
+    .top-blog-link {
+      display: inline-flex; align-items: center;
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+      font-family: var(--mono);
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .top-blog-link:hover {
+      color: #ffd7ca;
+      border-color: #ff7f56;
+      background: rgba(255, 127, 86, .25);
+      box-shadow: 0 0 14px rgba(255,127,86,.25);
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .back-to-top-wrap {
+      margin-top: 26px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .back-to-top-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border: 1px solid rgba(255, 127, 86, 0.45);
+      color: var(--accent);
+      background: rgba(255, 127, 86, 0.08);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .back-to-top-btn:hover {
+      background: rgba(255, 127, 86, 0.18);
+      color: #ffd8cd;
+      border-color: rgba(255, 127, 86, 0.65);
+    }
+
+    article {
+      background: linear-gradient(180deg, rgba(25, 34, 50, 0.88), rgba(20, 27, 40, 0.94));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(24px, 4vw, 44px);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 34px 0;
+    }
+
+    p {
+      margin: 0 0 20px;
+      color: #d7deed;
+      font-size: 15.5px;
+    }
+
+    p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: #f4f7ff;
+    }
+
+    em {
+      color: #d6def1;
+      font-style: italic;
+    }
+
+    article a {
+      color: #ffb39a;
+      text-decoration-color: rgba(255, 127, 86, 0.5);
+      text-underline-offset: 2px;
+    }
+
+    article a:hover {
+      color: #ffd9cc;
+      text-decoration-color: rgba(255, 127, 86, 0.9);
+    }
+
+    blockquote {
+      margin: 24px 0;
+      border-left: 3px solid var(--accent);
+      background: rgba(255, 127, 86, 0.08);
+      padding: 14px 18px;
+      border-radius: 10px;
+      color: #ffcfbf;
+      font-style: italic;
+    }
+
+    .closing-note {
+      margin-top: 26px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      padding-top: 18px;
+    }
+
+    @media (max-width: 720px) {
+      header { padding: 0 20px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; }
+      .page-wrap { padding: 14px; }
+      article { padding: 20px; border-radius: 16px; }
+      p { font-size: 15px; }
+    }
+  </style>
+</head>
+<body id="top">
+  <header>
+    <div class="logo">
+      <img src="/branding/kodez_logo.svg" alt="Kodez CheckMate logo" class="logo-mark" />
+      <div>
+        <div class="logo-text">Kodez CheckMate</div>
+        <div class="logo-sub">AI-Powered SecOps Orchestration for Auth0</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="/blog.html" class="top-blog-link">Blog</a>
+      <a href="/our-story.html" class="top-blog-link">Our Story</a>
+      <a href="/learn-more.html" class="top-blog-link">Learn More</a>
+      <a href="/" class="top-blog-link">Back to Home</a>
+      <div class="hackathon-label">Authorized to Act: Auth0 for AI Agents</div>
+      <div class="badge"><span class="badge-dot"></span>TOKEN VAULT</div>
+    </div>
+  </header>
+  <div class="page-wrap">
+
+    <article>
+      <div class="eyebrow">By the Kodez Team</div>
+      <h1>Why We Built Auth0 Token Vault Into Kodez CheckMate From Day One</h1>
+
+      <hr />
+
+      <p>When we started building Kodez CheckMate, the hardest problem wasn't the AI Agent, the scan orchestration, or the JIRA integration. It was a question we kept coming back to: where do the tokens live?</p>
+
+      <p>CheckMate connects to GitHub, JIRA, Confluence, and Microsoft Teams on your behalf. That means OAuth access tokens. Refresh tokens. Credentials with real write permissions. The naive path — storing them in a database, passing them through the app layer, caching them in the browser — felt wrong from the first whiteboard session. Not wrong in a theoretical way. Wrong in a <em>this will cause an incident one day</em> way.</p>
+
+      <p>We evaluated several approaches. Environment variables felt too brittle at scale. A secrets manager added operational overhead we didn't want to impose on users. Then we looked harder at Auth0 Token Vault, and something clicked.</p>
+
+      <p>Before we even got to Token Vault, we had to solve a related challenge: Auth0 doesn't have a social connection for every service we needed. GitHub was straightforward — Auth0 ships with a GitHub connector out of the box. JIRA, Confluence, and Microsoft Teams were a different story. What made this tractable is that Auth0 supports any OIDC-compliant connection. Each of those three services exposes an OIDC-compatible identity layer, so we registered them as custom social connections and Auth0 handled the rest — including the token lifecycle. No custom OAuth dance, no hand-rolled callback handlers.</p>
+
+      <p>That's where Token Vault came in. It keeps every credential inside the Auth0 infrastructure, completely isolated from the client application. The app never holds a token. The browser never sees one. When the AI Agent needs to create a JIRA ticket or post to Teams, it calls through the vault — the token is used, but never exposed. The attack surface for credential theft essentially collapses.</p>
+
+      <p>What surprised us was how naturally this composed with Auth0's session model. Users were already authenticating through Auth0 to access CheckMate. Managing integration credentials through the same trust boundary — via OIDC connections feeding directly into Token Vault — felt like a coherent system, not a patchwork.</p>
+
+      <p>The compliance angle mattered too. Teams operating under SOC 2 or ISO 27001 need demonstrable controls around third-party credentials. Token Vault provided that without adding any operational burden to customers.</p>
+
+      <blockquote>The architectural decision that took the most deliberation ended up being the one we'd change least.</blockquote>
+
+      <p class="closing-note"><a href="https://www.kodez.com.au/" target="_blank" rel="noopener">Kodez</a> CheckMate — AI-Powered SecOps Orchestration for Auth0.</p>
+      <div class="back-to-top-wrap">
+        <a href="#top" class="back-to-top-btn">Back to Top</a>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

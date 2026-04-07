@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kodez CheckMate Blog</title>
+  <title>Introducing Kodez CheckMate — Blog</title>
   <link rel="icon" type="image/svg+xml" href="/branding/kodez_logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,19 +42,71 @@
       padding: 24px;
     }
 
-    .top-bar {
-      position: static;
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(20, 27, 40, 0.82);
-      backdrop-filter: blur(12px);
-      margin-bottom: 20px;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(10, 11, 13, .85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
     }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+    .logo-text { font-family: var(--sans); font-size: 14px; font-weight: 700; color: #e8eaf0; letter-spacing: .01em; }
+    .logo-sub { font-family: var(--ui); font-size: 10px; color: #6b7280; letter-spacing: .03em; text-transform: uppercase; }
+    .hackathon-label {
+      padding: 5px 12px;
+      background: rgba(255, 127, 86, .08);
+      border: 1px solid rgba(255, 127, 86, .3);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #ff7f56;
+      font-family: var(--mono);
+      letter-spacing: .03em;
+    }
+    .badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7f56; box-shadow: 0 0 6px #ff7f56; animation: blink 2s infinite; }
+    .top-blog-link {
+      display: inline-flex; align-items: center;
+      padding: 5px 14px;
+      background: rgba(255, 127, 86, .15);
+      border: 1px solid #ff7f56;
+      border-radius: 20px;
+      color: #ff7f56;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      font-size: 11px;
+      font-family: var(--mono);
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .top-blog-link:hover {
+      color: #ffd7ca;
+      border-color: #ff7f56;
+      background: rgba(255, 127, 86, .25);
+      box-shadow: 0 0 14px rgba(255,127,86,.25);
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
 
     .back-to-top-wrap {
       margin-top: 26px;
@@ -83,60 +135,6 @@
       background: rgba(255, 127, 86, 0.18);
       color: #ffd8cd;
       border-color: rgba(255, 127, 86, 0.65);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand img {
-      width: 30px;
-      height: 30px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .brand-title {
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-    }
-
-    .brand-sub {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 56vw;
-    }
-
-    .home-link {
-      text-decoration: none;
-      border: 1px solid rgba(255, 127, 86, 0.45);
-      color: var(--accent);
-      background: rgba(255, 127, 86, 0.08);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    .home-link:hover {
-      background: rgba(255, 127, 86, 0.18);
-      color: #ffd8cd;
     }
 
     article {
@@ -169,6 +167,7 @@
       color: var(--muted);
       font-size: 17px;
       max-width: 72ch;
+      text-align: justify;
     }
 
     hr {
@@ -196,6 +195,7 @@
       margin: 0 0 18px;
       color: #d7deed;
       font-size: 15.5px;
+      text-align: justify;
     }
 
     strong {
@@ -224,6 +224,7 @@
       padding: 14px 16px;
       border-radius: 10px;
       color: #ffcfbf;
+      text-align: justify;
     }
 
     .architecture-figure {
@@ -251,18 +252,43 @@
       padding-top: 18px;
     }
 
+    /* Callout box — used for Token Vault insight */
+    .callout {
+      margin: 20px 0 28px;
+      border: 1px solid rgba(255, 127, 86, 0.28);
+      background: rgba(255, 127, 86, 0.06);
+      border-radius: 14px;
+      padding: 18px 22px;
+    }
+
+    .callout-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 15px;
+      color: #e0cec8;
+      text-align: justify;
+    }
+
     @media (max-width: 720px) {
+      header {
+        padding: 0 20px;
+        height: auto;
+        min-height: 56px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
       .page-wrap {
         padding: 14px;
-      }
-
-      .top-bar {
-        top: 10px;
-        padding: 10px;
-      }
-
-      .brand-sub {
-        max-width: 42vw;
       }
 
       article {
@@ -277,30 +303,36 @@
   </style>
 </head>
 <body id="top">
-  <div class="page-wrap">
-    <header class="top-bar">
-      <div class="brand">
-        <img src="/branding/kodez_logo.svg" alt="Kodez logo" />
-        <div>
-          <div class="brand-title">Kodez CheckMate</div>
-          <div class="brand-sub">AI-Powered SecOps Orchestration for Auth0</div>
-        </div>
+  <header>
+    <div class="logo">
+      <img src="/branding/kodez_logo.svg" alt="Kodez CheckMate logo" class="logo-mark" />
+      <div>
+        <div class="logo-text">Kodez CheckMate</div>
+        <div class="logo-sub">AI-Powered SecOps Orchestration for Auth0</div>
       </div>
-      <a href="/learn-more.html" class="home-link">Learn More</a>
-      <a href="/" class="home-link">Back to Home</a>
-    </header>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="/blog.html" class="top-blog-link">Blog</a>
+      <a href="/our-story.html" class="top-blog-link">Our Story</a>
+      <a href="/learn-more.html" class="top-blog-link">Learn More</a>
+      <a href="/" class="top-blog-link">Back to Home</a>
+      <div class="hackathon-label">Authorized to Act: Auth0 for AI Agents</div>
+      <div class="badge"><span class="badge-dot"></span>TOKEN VAULT</div>
+    </div>
+  </header>
+  <div class="page-wrap">
 
     <article>
       <div class="eyebrow">Product Blog</div>
       <h1>Introducing Kodez CheckMate: AI-Powered SecOps Orchestration for Auth0</h1>
-      <p class="lead">Security operations teams face a familiar problem. Vulnerability scanners surface findings. Those findings get copied into spreadsheets, pasted into tickets, summarised in emails, and posted in Slack channels - by hand, one step at a time. The tools exist, but the glue between them does not. Teams end up spending more time on the workflow around a vulnerability than on actually fixing it.</p>
+      <p class="lead">Security operations teams face a familiar problem. Vulnerability scanners surface findings. Those findings get copied into spreadsheets, pasted into tickets, summarised in emails, and posted in Slack channels — by hand, one step at a time. The tools exist, but the glue between them does not. Teams end up spending more time on the workflow around a vulnerability than on actually fixing it.</p>
       <p><a href="https://www.kodez.com.au/" target="_blank" rel="noopener">Kodez</a> CheckMate is built to close that gap. It is an AI-powered SecOps orchestration platform that takes <a href="https://auth0.com/blog/introducing-checkmate-for-auth0/" target="_blank" rel="noopener">Auth0 CheckMate</a> security scans from raw results to tracked, documented, and actioned findings, driven entirely by natural language prompts.</p>
 
       <hr />
 
       <h2>What Is <a href="https://auth0.com/blog/introducing-checkmate-for-auth0/" target="_blank" rel="noopener">Auth0 CheckMate</a>?</h2>
       <p><a href="https://auth0.com/blog/introducing-checkmate-for-auth0/" target="_blank" rel="noopener">Auth0 CheckMate</a> is a security scanning tool built specifically for Auth0 tenants. It inspects your Auth0 configuration and surfaces vulnerabilities, misconfigurations, and compliance risks across your identity infrastructure.</p>
-      <p>The out-of-the-box CheckMate tool gives you a point-in-time report. That is useful, but it is just the starting point. The real work - triaging findings, creating tickets, communicating to stakeholders, and tracking remediation over time - happens elsewhere, and until now that handoff has been entirely manual.</p>
+      <p>The out-of-the-box CheckMate tool gives you a point-in-time report. That is useful, but it is just the starting point. The real work — triaging findings, creating tickets, communicating to stakeholders, and tracking remediation over time — happens elsewhere, and until now that handoff has been entirely manual.</p>
       <p><a href="https://www.kodez.com.au/" target="_blank" rel="noopener">Kodez</a> CheckMate changes that.</p>
 
       <hr />
@@ -314,30 +346,52 @@
       <hr />
 
       <h2>How It Works</h2>
+
       <h3>Log In with Auth0</h3>
       <p>Everything starts with your Auth0 account. Users authenticate directly through Auth0, so there is no separate credential to manage and no new identity silo to introduce into your stack.</p>
-      <p>Once logged in, you connect the integrations your team already uses: GitHub, JIRA, Confluence, and Microsoft Teams. The connection process is built on top of <strong>Auth0 TokenVault</strong>, which means the access tokens and refresh tokens issued by each integration are stored securely inside the vault, completely out of reach of the client application. Tokens are never exposed in transit, never held in your browser, and never accessible outside the vault environment. This is not just a security convenience; it is a meaningful reduction in token misuse risk and a genuine compliance improvement for teams operating under frameworks like SOC 2, ISO 27001, or similar.</p>
+      <p>Once logged in, you connect the integrations your team already uses: GitHub, JIRA, Confluence, and Microsoft Teams. The connection process is built on top of <strong>Auth0 Token Vault</strong>, which means the access tokens and refresh tokens issued by each integration are stored securely inside the vault, completely out of reach of the client application. Tokens are never exposed in transit, never held in your browser, and never accessible outside the vault environment. This is not just a security convenience — it is a meaningful reduction in token misuse risk and a genuine compliance improvement for teams operating under frameworks like SOC 2, ISO 27001, or similar.</p>
+
+      <hr />
+
+      <h2>Why We Built Auth0 Token Vault Into Kodez CheckMate From Day One</h2>
+      <p>When we started building Kodez CheckMate, the hardest problem was not the AI Agent, the scan orchestration, or the JIRA integration. It was a question we kept coming back to: <em>where do the tokens live?</em></p>
+      <p>CheckMate connects to GitHub, JIRA, Confluence, and Microsoft Teams on your behalf. That means OAuth access tokens, refresh tokens, and credentials with real write permissions. The naive path — storing them in a database, passing them through the app layer, caching them in the browser — felt wrong from the first whiteboard session. Not wrong in a theoretical way. Wrong in a <em>this will cause an incident one day</em> way.</p>
+      <p>We evaluated several approaches. Environment variables felt too brittle at scale. A secrets manager added operational overhead we did not want to impose on users. Then we looked harder at Auth0 Token Vault, and something clicked.</p>
+
+      <h3>Connecting the Integrations: Out-of-the-Box, Enterprise, and OIDC</h3>
+      <p>Before we even got to Token Vault, we had to solve a related challenge: Auth0 does not have a social connection for every service we needed. <strong>GitHub</strong> was straightforward — Auth0 ships with a GitHub connector out of the box. <strong>Microsoft Teams</strong> was also well-served: Auth0 provides a first-party <strong>Microsoft Azure AD Enterprise Connection</strong>, so we used that directly — no custom configuration required. <strong>JIRA and Confluence</strong> were a different story.</p>
+      <p>What made JIRA and Confluence tractable is that Auth0 supports any OIDC-compliant connection. Both Atlassian services expose an OIDC-compatible identity layer, so we registered them as custom social connections and Auth0 handled the rest — including the token lifecycle. No custom OAuth dance, no hand-rolled callback handlers. If Auth0 does not have a built-in connector for a service you need, the answer is straightforward: if it speaks OIDC, you can connect it.</p>
+
+      <div class="callout">
+        <div class="callout-label">Key insight</div>
+        <p>Auth0's OIDC support means you are not limited to the services with first-party social or enterprise connections. Any OIDC-compliant provider can be brought into the same authentication and token management model — which is exactly how we integrated JIRA and Confluence. For Microsoft Teams, the out-of-the-box Azure AD Enterprise Connection made the setup even simpler.</p>
+      </div>
+
+      <h3>Token Vault: Closing the Exposure Gap</h3>
+      <p>That is where Token Vault came in. It keeps every credential inside the Auth0 infrastructure, completely isolated from the client application. The app never holds a token. The browser never sees one. When the AI Agent needs to create a JIRA ticket or post to Teams, it calls through the vault — the token is used, but never exposed. The attack surface for credential theft essentially collapses.</p>
+      <p>What surprised us was how naturally this composed with Auth0's existing session model. Users were already authenticating through Auth0 to access CheckMate. Managing integration credentials through the same trust boundary — OIDC connections feeding directly into Token Vault — felt like a coherent system, not a patchwork of loosely connected parts.</p>
+      <p>The compliance angle mattered too. Teams operating under SOC 2 or ISO 27001 need demonstrable controls around third-party credentials. Token Vault provided that story without adding any operational burden to customers. The architectural decision that took the most deliberation ended up being the one we would change least.</p>
 
       <hr />
 
       <h2>The AI Agent: GPT-5.4 on Azure</h2>
-      <p>At the heart of the platform is an AI Agent powered by GPT-5.4, running on Azure Cloud. This is not a chatbot bolted onto a dashboard; it is the primary interface for the platform. You interact with it through natural language prompts, and it handles the orchestration behind the scenes.</p>
-      <p>The agent understands the context of the platform. When you type <em>Run security scan</em>, it recognises the intent, identifies the appropriate action - invoking <a href="https://auth0.com/blog/introducing-checkmate-for-auth0/" target="_blank" rel="noopener">Auth0 CheckMate</a> against your target Auth0 tenant - and responds with a clear description of what it is about to do, asking you to confirm before proceeding. This human-in-the-loop approval step is a deliberate design choice: every action the agent takes requires explicit user sign-off, so nothing runs without your knowledge.</p>
+      <p>At the heart of the platform is an AI Agent powered by GPT-5.4, running on Azure Cloud. This is not a chatbot bolted onto a dashboard — it is the primary interface for the platform. You interact with it through natural language prompts, and it handles the orchestration behind the scenes.</p>
+      <p>The agent understands the context of the platform. When you type <em>Run security scan</em>, it recognises the intent, identifies the appropriate action — invoking <a href="https://auth0.com/blog/introducing-checkmate-for-auth0/" target="_blank" rel="noopener">Auth0 CheckMate</a> against your target Auth0 tenant — and responds with a clear description of what it is about to do, asking you to confirm before proceeding. This human-in-the-loop approval step is a deliberate design choice: every action the agent takes requires explicit user sign-off, so nothing runs without your knowledge.</p>
 
       <h3>Prompt Templates for Faster Interaction</h3>
-      <p>To speed up common workflows, the platform provides a set of pre-defined prompt templates directly in the agent chat. Rather than typing from scratch, users can pick a template - <em>Run security scan</em>, <em>Compare with last scan</em>, <em>Create JIRA tickets for all findings</em>, <em>Publish Confluence summary</em>, <em>Alert team on Teams</em> - and the agent is ready to act immediately.</p>
+      <p>To speed up common workflows, the platform provides a set of pre-defined prompt templates directly in the agent chat. Rather than typing from scratch, users can pick a template — <em>Run security scan</em>, <em>Compare with last scan</em>, <em>Create JIRA tickets for all findings</em>, <em>Publish Confluence summary</em>, <em>Alert team on Teams</em> — and the agent is ready to act immediately.</p>
 
       <h3>Chain Multiple Tasks in a Single Prompt</h3>
       <p>One of the more powerful capabilities is task chaining. Instead of triggering actions one by one, you can combine multiple tasks into a single prompt:</p>
       <blockquote>
         Run security scan. Publish the executive summary into Confluence. Create JIRA tickets for issue tracking and update the stakeholders via Teams.
       </blockquote>
-      <p>The agent parses that as four distinct actions, presents them to you for approval in sequence, and then executes each one in order, without you having to re-engage between steps.</p>
+      <p>The agent parses that as four distinct actions, presents them to you for approval in sequence, and then executes each one in order — without you having to re-engage between steps.</p>
 
       <hr />
 
       <h2>Security Scans, Visualised</h2>
-      <p>After a scan completes, the agent does not just return a wall of JSON. It processes the results and presents them visually - charts and graphs that show the number of open vulnerabilities per scan, so you can immediately see whether your security posture is improving, degrading, or holding steady over time.</p>
+      <p>After a scan completes, the agent does not just return a wall of JSON. It processes the results and presents them visually — charts and graphs that show the number of open vulnerabilities per scan, so you can immediately see whether your security posture is improving, degrading, or holding steady over time.</p>
       <p>You can also compare scans directly. Ask the agent <em>How do today's results compare to last week's scan?</em> and it will surface the delta: new findings, resolved issues, and anything that has changed.</p>
 
       <hr />
@@ -347,12 +401,12 @@
       <blockquote>
         Create a JIRA board and create tickets for all findings.
       </blockquote>
-      <p>The agent connects to your linked JIRA account via the integration and creates structured tickets for every open vulnerability - no copy-pasting, no manual triage, and no context switching.</p>
+      <p>The agent connects to your linked JIRA account via the integration and creates structured tickets for every open vulnerability — no copy-pasting, no manual triage, and no context switching.</p>
 
       <hr />
 
       <h2>Executive Summaries in Confluence</h2>
-      <p>Security findings do not just need to be actioned; they need to be documented. With one prompt, the agent can publish an executive summary of your scan results directly to a Confluence page. The content is structured and readable, giving leadership and audit teams the visibility they need without requiring engineers to write reports manually.</p>
+      <p>Security findings do not just need to be actioned — they need to be documented. With one prompt, the agent can publish an executive summary of your scan results directly to a Confluence page. The content is structured and readable, giving leadership and audit teams the visibility they need without requiring engineers to write reports manually.</p>
 
       <hr />
 
@@ -367,11 +421,11 @@
       <hr />
 
       <h2>Why It Matters</h2>
-      <p>The individual pieces here - security scanning, ticketing, documentation, and alerting - are not new. What is new is the orchestration layer that connects them, driven by a model that understands what you are trying to do and handles the coordination automatically.</p>
+      <p>The individual pieces here — security scanning, ticketing, documentation, and alerting — are not new. What is new is the orchestration layer that connects them, driven by a model that understands what you are trying to do and handles the coordination automatically.</p>
       <p>For security teams, that means less time managing workflows and more time reducing risk. For engineering teams, it means findings arrive in their existing tools in the right format without manual handoff. For leadership, it means visibility into security posture without waiting for a weekly report.</p>
       <p><a href="https://www.kodez.com.au" target="_blank" rel="noopener">Kodez</a> CheckMate is available now. Log in with your Auth0 account to connect your integrations and run your first scan.</p>
 
-      <p class="closing-note"><a href="https://www.kodez.com.au/" target="_blank" rel="noopener">Kodez</a> CheckMate - AI-Powered SecOps Orchestration for Auth0.</p>
+      <p class="closing-note"><a href="https://www.kodez.com.au/" target="_blank" rel="noopener">Kodez</a> CheckMate — AI-Powered SecOps Orchestration for Auth0.</p>
       <div class="back-to-top-wrap">
         <a href="#top" class="back-to-top-btn">Back to Top</a>
       </div>

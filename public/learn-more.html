@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Kodez CheckMate — Learn More</title>
 <link rel="icon" type="image/svg+xml" href="/branding/kodez_logo.svg" />
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -37,31 +37,45 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 28px;
-    height: 52px;
-    background: rgba(17,17,17,0.97);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(10, 11, 13, .85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,.07);
     z-index: 10;
   }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo svg { width: 22px; height: 18px; flex-shrink: 0; }
-  .logo-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 15px; font-weight: 800;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--white);
-  }
-  .logo-text .d { color: var(--brand); }
-  .logo-text .sep { color: rgba(255,255,255,0.25); font-weight: 300; margin: 0 4px; }
-  .logo-text .product { color: rgba(255,255,255,0.65); letter-spacing: 0.04em; font-weight: 600; }
-  #slide-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--grey4);
-    transition: opacity 0.3s;
-  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+  .logo-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; color: #e8eaf0; letter-spacing: .01em; }
+  .logo-sub { font-family: 'Inter', sans-serif; font-size: 10px; color: #6b7280; letter-spacing: .03em; text-transform: uppercase; }
+  #slide-title { display: none; }
   .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .hackathon-label {
+    padding: 5px 12px;
+    background: rgba(255, 127, 86, .08);
+    border: 1px solid rgba(255, 127, 86, .3);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #ff7f56;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .03em;
+  }
+  .badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px;
+    background: rgba(255, 127, 86, .15);
+    border: 1px solid #ff7f56;
+    border-radius: 20px;
+    color: #ff7f56;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 600;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7f56; box-shadow: 0 0 6px #ff7f56; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
   .counter {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 13px; font-weight: 600;
@@ -80,20 +94,22 @@
   }
   #fs-btn:hover { border-color: var(--brand); background: rgba(255,127,86,0.1); color: var(--brand); }
   #fs-btn svg { width: 13px; height: 13px; }
-  .home-link {
+  .top-blog-link {
     display: inline-flex; align-items: center;
+    padding: 5px 14px;
+    background: rgba(255, 127, 86, .15);
+    border: 1px solid #ff7f56;
+    border-radius: 20px;
+    color: #ff7f56;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 600;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
     text-decoration: none;
-    border: 1px solid rgba(255,127,86,0.45);
-    color: var(--brand);
-    background: rgba(255,127,86,0.08);
-    border-radius: 999px;
-    padding: 5px 12px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    transition: all .2s;
   }
-  .home-link:hover { background: rgba(255,127,86,0.18); color: #ffd8cd; border-color: rgba(255,127,86,0.65); }
+  .top-blog-link:hover { color: #ffd7ca; border-color: #ff7f56; background: rgba(255, 127, 86, .25); box-shadow: 0 0 14px rgba(255,127,86,.25); }
 
   /* PROGRESS BAR */
   #progress {
@@ -198,15 +214,18 @@
 
   <div id="topbar">
     <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="136 0 143 115">
-        <polygon points="236.07 111.904 276.232 111.904 207.744 0 187.654 32.826 236.07 111.904" fill="#ff7f56"/>
-        <path d="M176.0282,70.6418l19.248,31.4368H156.7884l19.24-31.4368m-.0014-18.8184-36.7708,60.08h73.556l-36.7852-60.08Z" fill="#ff7f56"/>
-      </svg>
-      <div class="logo-text">KO<span class="d">D</span>EZ<span class="sep">·</span><span class="product">CheckMate</span></div>
+      <img src="/branding/kodez_logo.svg" alt="Kodez CheckMate logo" class="logo-mark" />
+      <div>
+        <div class="logo-text">Kodez CheckMate</div>
+        <div class="logo-sub">AI-Powered SecOps Orchestration for Auth0</div>
+      </div>
     </div>
-    <div id="slide-title">Cover</div>
     <div class="topbar-right">
-      <a href="/" class="home-link">Home</a>
+      <a href="/blog.html" class="top-blog-link">Blog</a>
+      <a href="/our-story.html" class="top-blog-link">Our Story</a>
+      <a href="/" class="top-blog-link">Back to Home</a>
+      <div class="hackathon-label">Authorized to Act: Auth0 for AI Agents</div>
+      <div class="badge"><span class="badge-dot"></span>TOKEN VAULT</div>
       <div class="counter"><em id="cur-num">1</em> / 9</div>
       <button id="fs-btn" title="Toggle fullscreen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">

@@ -37,10 +37,11 @@ Kodez CheckMate wraps that scanner in an AI orchestration layer — so the findi
 | **Live Demo** | https://authorizedtoact.kodez.au/ |
 | **Blog** | https://authorizedtoact.kodez.au/blog.html |
 | **Product Slide Deck** | https://authorizedtoact.kodez.au/learn-more.html |
+| **Developer Guide** | https://authorizedtoact.kodez.au/developer.html |
 
 ---
 
-## Architecture
+## Kodez CheckMate Architecture
 
 ![Kodez CheckMate Architecture](branding/kodez_checkmate_architecture.svg)
 
@@ -52,6 +53,8 @@ Kodez CheckMate wraps that scanner in an AI orchestration layer — so the findi
 - PostgreSQL database
 - Auth0 tenant with Token Vault enabled
 - Azure OpenAI resource (GPT-5.4 / compatible deployment)
+
+> For detailed setup instructions, follow all steps in the [Developer Guide](https://authorizedtoact.kodez.au/developer.html) before proceeding.
 
 ---
 
@@ -65,9 +68,11 @@ npm install
 cp .env.example .env
 # Edit .env and fill in all values (see Environment Variables below)
 
-# 3. Start the server
-npm start          # production
-npm run dev        # development (auto-restarts on file changes)
+# 3. Build the Docker image
+docker-compose build
+
+# 4. Start the application
+docker-compose up -d
 ```
 
 The app runs on `http://localhost:3005` by default (controlled by `AUTH0_BASE_URL`).
