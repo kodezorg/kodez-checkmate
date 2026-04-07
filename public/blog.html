@@ -252,6 +252,22 @@
       padding-top: 18px;
     }
 
+    .video-embed {
+      margin: 16px 0 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(25, 34, 50, 0.7);
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-embed iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
     /* Callout box — used for Token Vault insight */
     .callout {
       margin: 20px 0 28px;
@@ -342,6 +358,19 @@
         <img src="/branding/kodez_checkmate_architecture.svg" alt="Kodez CheckMate architecture diagram showing the User, Kodez CheckMate platform, AI Agent, Database, Auth0 Token Vault, Azure Foundry GPT, Auth0 CheckMate security scanner, Auth0 Tenant, and downstream connectors for JIRA, Confluence, Microsoft Teams, and GitHub Workflow" />
       </div>
       <p>The diagram above illustrates how each component fits together. At the centre is the <strong>Kodez CheckMate</strong> platform, which coordinates the <strong>AI Agent</strong>, <strong>Database</strong>, and <strong>Auth0 Token Vault</strong>. The AI Agent delegates LLM inference to <strong>Azure Foundry GPT</strong> and drives the <strong>Auth0 CheckMate</strong> security scanner. The scanner receives its <em>scan configuration</em> directly from the <strong>Auth0 Tenant</strong> — the live identity environment being assessed — ensuring every scan reflects the actual state of your Auth0 configuration. Results are persisted to the database and surfaced through the downstream connectors: JIRA, Confluence, and Microsoft Teams. <strong>GitHub Workflow</strong> sits apart from these — its sole role is to trigger the Auth0 CheckMate security scanner, kicking off scans on demand or on a schedule.</p>
+
+      <hr />
+
+      <h2>Product Demo</h2>
+      <div class="video-embed">
+        <iframe
+          src="https://www.youtube.com/embed/Ze1vQ1GiOYk"
+          title="Kodez CheckMate — Product Demo"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
 
       <hr />
 
